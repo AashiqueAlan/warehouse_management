@@ -1,0 +1,101 @@
+<mvc:View controllerName="warehousestandards.controller.Main"
+  xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    displayBlock="true"
+>
+    <Page title="Warehouse Standards">
+        <headerContent>
+            <Button
+                text="Add Row"
+                icon="sap-icon://add"
+                press="onAddRow"
+                enabled="{ViewModel>/canAddRow}"
+            />
+
+            <Button
+                text="Edit"
+                icon="sap-icon://edit"
+                press="onEditButtonPress"
+                enabled="{ViewModel>/toggleeditbtn}"
+            />
+
+            <Button
+                text="Save"
+                icon="sap-icon://save"
+                type="Success"
+                press="onSaveButtonPress"
+                enabled="{ViewModel>/editMode}"
+            />
+        </headerContent>
+
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <HBox alignItems="Baseline">
+                    <Label
+                        text="Warehouse:"
+                        design="Bold"
+                        class="sapUiTinyMarginEnd"
+                    />
+                    <Label text="{ViewModel>/warehouseDisplay}" />
+                </HBox>
+            </VBox>
+
+            <Table
+                id="warehouseTable"
+                items="{ViewModel>/rows}"
+                mode="{= ${ViewModel>/editMode} ? 'Delete' : 'None'}"
+                delete="onDeleteRow"
+                growing="true"
+                growingThreshold="20"
+            >
+                <columns>
+                    <Column width="50px">
+                        <Text text="SNo" />
+                    </Column>
+                    <Column>
+                        <Text text="Queue" />
+                    </Column>
+                    <Column>
+                        <Text text="Value" />
+                    </Column>
+                    <Column>
+                        <Text text="UOM" />
+                    </Column>
+                </columns>
+
+                <items>
+                    <ColumnListItem>
+                        <cells>
+                            <Text text="{ViewModel>SNo}" />
+
+                            <Input
+                                value="{ViewModel>Queue}"
+                                editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW'}"
+                                showValueHelp="true"
+                                valueHelpRequest="onQueueValueHelp"
+                                placeholder="Select Queue"
+                            />
+
+                            <Input
+                                value="{ViewModel>Value}"
+                                editable="{ViewModel>/editMode}"
+                                type="Number"
+                                placeholder="Enter Value"
+                            />
+
+                            <Input
+                                value="{ViewModel>Uom}"
+                                editable="{ViewModel>/editMode}"
+                                showValueHelp="true"
+                                valueHelpRequest="onUomValueHelp"
+                                placeholder="Select UOM"
+                            />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

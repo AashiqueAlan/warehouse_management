@@ -1,0 +1,51 @@
+{
+  "name": "warehouse_management_package",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "dependencies": {
+    "@cap-js/hana": "^2",
+    "@sap/cds": "^9",
+    "@sap/xssec": "^4",
+    "express": "^4",
+    "@sap-cloud-sdk/connectivity": "^4",
+    "@sap-cloud-sdk/http-client": "^4",
+    "@sap-cloud-sdk/resilience": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2",
+    "@sap/cds-dk": "^9",
+    "cds-plugin-ui5": "^0.13.0",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-warehouse_standards": "cds watch --open warehousestandards/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy warehouse_management_package --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "watch-maintain_utilization": "cds watch --open maintainutilization/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "cds": {
+    "requires": {
+      "[production]": {
+        "auth": "xsuaa"
+      },
+      "connectivity": true,
+      "destinations": true,
+      "html5-repo": true,
+      "ZEWM_WHS_LM_SRV": {
+        "kind": "odata-v2",
+        "model": "srv/external/ZEWM_WHS_LM_SRV",
+        "credentials": {
+          "destination": "EWM-PrincipalPropagation",
+          "path": "/sap/opu/odata/sap/ZEWM_WHS_LM_SRV"
+        }
+      }
+    }
+  },
+  "workspaces": [
+    "app/*"
+  ]
+}

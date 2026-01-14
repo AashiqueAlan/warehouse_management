@@ -1,0 +1,60 @@
+/* Enter your custom styles here *//* Enter your custom styles here *//* Enter your custom styles here *//* Enter your custom styles here *//* Enter your custom styles here *//* Enter your custom styles here *//* ===============================
+   Warehouse Selection Animations
+   Theme-safe (no colors overridden)
+   =============================== */
+
+.warehouseSelectionContainer {
+    animation: fadeInUp 0.5s ease-out;
+}
+
+/* Page entry animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Input smoothness (no visual override) */
+.sapMInputBaseInner {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Button micro-interactions */
+.continueButton {
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+/* Hover lift */
+.continueButton:hover {
+    transform: translateY(-2px);
+}
+
+/* Press feedback */
+.continueButton:active {
+    transform: translateY(0);
+}
+
+/* Disabled state – let theme handle colors */
+.continueButton[aria-disabled="true"] {
+    cursor: not-allowed;
+}
+
+/* Suggestions animation only */
+.sapMSuggestions {
+    border-radius: 8px;
+   
+}
+
+/* Responsive spacing only */
+@media (max-width: 768px) {
+    .warehouseSelectionContainer {
+        padding: 1.5rem;
+        width: 90% !important;
+    }
+}
