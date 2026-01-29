@@ -21,222 +21,479 @@
     <content>
 
       <!-- ================================================= -->
-      <!-- =============== OUTBOUND ONLY VIEW ============== -->
+      <!-- =============== OUTBOUND ONLY (SINGLE) ========= -->
       <!-- ================================================= -->
       <VBox visible="{viewModel>/showOutboundOnly}" class="sapUiSmallMargin">
         <Panel headerText="Outbound">
-          <content>
-            <table:Table
-              rows="{viewModel>/outboundData}"
-              selectionMode="None"
-              class="sapUiSizeCompact"
-              alternateRowColors="true"
-              enableColumnReordering="false"
-              visibleRowCount="{= ${viewModel>/outboundData}.length }">
-
-              <table:columns>
-                <table:Column width="auto">
-                  <Label text="Activity"/>
-                  <table:template>
-                    <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-
-                <table:Column width="auto" hAlign="Center">
-                  <Label text="Need"/>
-                  <table:template>
-                    <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-
-                <table:Column width="auto" hAlign="Center">
-                  <Label text="Current"/>
-                  <table:template>
-                    <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-
-                <table:Column width="auto" hAlign="Center">
-                  <Label text="Difference"/>
-                  <table:template>
-                    <ObjectStatus
-                      text="{viewModel>Difference}"
-                      state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
-                      class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-              </table:columns>
-
-            </table:Table>
-          </content>
+          <table:Table rows="{viewModel>/outboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData}.length }">
+            <table:columns>
+              <table:Column>
+                <Label text="Activity"/>
+                <table:template>
+                  <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                </table:template>
+              </table:Column>
+              <table:Column hAlign="Center">
+                <Label text="Need"/>
+                <table:template>
+                  <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                </table:template>
+              </table:Column>
+              <table:Column hAlign="Center">
+                <Label text="Current"/>
+                <table:template>
+                  <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                </table:template>
+              </table:Column>
+              <table:Column hAlign="Center">
+                <Label text="Difference"/>
+                <table:template>
+                  <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                </table:template>
+              </table:Column>
+            </table:columns>
+          </table:Table>
         </Panel>
       </VBox>
 
       <!-- ================================================= -->
-      <!-- =============== INBOUND ONLY VIEW =============== -->
+      <!-- =============== INBOUND ONLY (SINGLE) ========== -->
       <!-- ================================================= -->
       <VBox visible="{viewModel>/showInboundOnly}" class="sapUiSmallMargin">
         <Panel headerText="Inbound">
-          <content>
-            <table:Table
-              rows="{viewModel>/inboundData}"
-              selectionMode="None"
-              class="sapUiSizeCompact"
-              alternateRowColors="true"
-              enableColumnReordering="false"
-              visibleRowCount="{= ${viewModel>/inboundData}.length }">
-
-              <table:columns>
-                <table:Column width="auto">
-                  <Label text="Activity"/>
-                  <table:template>
-                    <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-
-                <table:Column width="auto" hAlign="Center">
-                  <Label text="Need"/>
-                  <table:template>
-                    <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-
-                <table:Column width="auto" hAlign="Center">
-                  <Label text="Current"/>
-                  <table:template>
-                    <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-
-                <table:Column width="auto" hAlign="Center">
-                  <Label text="Difference"/>
-                  <table:template>
-                    <ObjectStatus
-                      text="{viewModel>Difference}"
-                      state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
-                      class="boldStatus"/>
-                  </table:template>
-                </table:Column>
-              </table:columns>
-
-            </table:Table>
-          </content>
+          <table:Table rows="{viewModel>/inboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData}.length }">
+            <table:columns>
+              <table:Column>
+                <Label text="Activity"/>
+                <table:template>
+                  <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                </table:template>
+              </table:Column>
+              <table:Column hAlign="Center">
+                <Label text="Need"/>
+                <table:template>
+                  <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                </table:template>
+              </table:Column>
+              <table:Column hAlign="Center">
+                <Label text="Current"/>
+                <table:template>
+                  <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                </table:template>
+              </table:Column>
+              <table:Column hAlign="Center">
+                <Label text="Difference"/>
+                <table:template>
+                  <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                </table:template>
+              </table:Column>
+            </table:columns>
+          </table:Table>
         </Panel>
       </VBox>
 
       <!-- ================================================= -->
-      <!-- ================= BOTH VIEW ==================== -->
+      <!-- ========== SINGLE TIME WINDOW : BOTH ============ -->
       <!-- ================================================= -->
       <VBox visible="{viewModel>/showBothPanels}" class="sapUiSmallMargin">
 
-        <!-- Draggable Split View using Splitter -->
         <layout:Splitter>
-
           <layout:contentAreas>
 
-            <!-- ================= OUTBOUND (LEFT PANEL) ================= -->
-            <ScrollContainer height="auto" width="auto" vertical="true">
-              <Panel headerText="Outbound">
-                <content>
-                  <table:Table
-                    rows="{viewModel>/outboundData}"
-                    selectionMode="None"
-                    class="sapUiSizeCompact"
-                    alternateRowColors="true"
-                    enableColumnReordering="false"
-                    visibleRowCount="{= ${viewModel>/outboundData}.length }">
+            <!-- OUTBOUND -->
+            <Panel headerText="Outbound">
+              <table:Table rows="{viewModel>/outboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData}.length }" class="sapUiSizeCompact" alternateRowColors="true">
 
-                    <table:columns>
-                      <table:Column width="auto">
-                        <Label text="Activity"/>
-                        <table:template>
-                          <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
 
-                      <table:Column width="auto" hAlign="Center">
-                        <Label text="Need"/>
-                        <table:template>
-                          <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
 
-                      <table:Column width="auto" hAlign="Center">
-                        <Label text="Current"/>
-                        <table:template>
-                          <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
 
-                      <table:Column width="auto" hAlign="Center">
-                        <Label text="Difference"/>
-                        <table:template>
-                          <ObjectStatus
-                            text="{viewModel>Difference}"
-                            state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
-                            class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
-                    </table:columns>
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
 
-                  </table:Table>
-                </content>
-              </Panel>
-            </ScrollContainer>
+              </table:Table>
+            </Panel>
 
-            <!-- ================= INBOUND (RIGHT PANEL) ================= -->
-            <ScrollContainer height="auto" width="auto" vertical="true">
-              <Panel headerText="Inbound">
-                <content>
-                  <table:Table
-                    rows="{viewModel>/inboundData}"
-                    selectionMode="None"
-                    class="sapUiSizeCompact"
-                    alternateRowColors="true"
-                    enableColumnReordering="false"
-                    visibleRowCount="{= ${viewModel>/inboundData}.length }">
+            <!-- INBOUND -->
+            <Panel headerText="Inbound">
+              <table:Table rows="{viewModel>/inboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData}.length }" class="sapUiSizeCompact" alternateRowColors="true">
 
-                    <table:columns>
-                      <table:Column width="auto">
-                        <Label text="Activity"/>
-                        <table:template>
-                          <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
 
-                      <table:Column width="auto" hAlign="Center">
-                        <Label text="Need"/>
-                        <table:template>
-                          <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
 
-                      <table:Column width="auto" hAlign="Center">
-                        <Label text="Current"/>
-                        <table:template>
-                          <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
 
-                      <table:Column width="auto" hAlign="Center">
-                        <Label text="Difference"/>
-                        <table:template>
-                          <ObjectStatus
-                            text="{viewModel>Difference}"
-                            state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
-                            class="boldStatus"/>
-                        </table:template>
-                      </table:Column>
-                    </table:columns>
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
 
-                  </table:Table>
-                </content>
-              </Panel>
-            </ScrollContainer>
+              </table:Table>
+            </Panel>
 
           </layout:contentAreas>
         </layout:Splitter>
       </VBox>
+
+      <!-- ================================================= -->
+      <!-- ===== DUAL TIME WINDOW : BOTH ================== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showDualTimeWindows}" class="sapUiSmallMargin">
+
+        <Title text="24 Hours Data" level="H3"/>
+        <layout:Splitter>
+          <layout:contentAreas>
+
+            <Panel headerText="Outbound (24 hrs)">
+              <table:Table rows="{viewModel>/outboundData24}" visibleRowCount="{= ${viewModel>/outboundData24}.length }" selectionMode="None">
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+              </table:Table>
+            </Panel>
+
+            <Panel headerText="Inbound (24 hrs)">
+              <table:Table rows="{viewModel>/inboundData24}" visibleRowCount="{= ${viewModel>/inboundData24}.length }" selectionMode="None">
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+              </table:Table>
+            </Panel>
+
+          </layout:contentAreas>
+        </layout:Splitter>
+
+        <Title text="48 Hours Data" level="H3"/>
+        <layout:Splitter>
+          <layout:contentAreas>
+
+            <Panel headerText="Outbound (48 hrs)">
+              <table:Table rows="{viewModel>/outboundData48}" visibleRowCount="{= ${viewModel>/outboundData48}.length }" selectionMode="None">
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+              </table:Table>
+            </Panel>
+
+            <Panel headerText="Inbound (48 hrs)">
+              <table:Table rows="{viewModel>/inboundData48}" visibleRowCount="{= ${viewModel>/inboundData48}.length }" selectionMode="None">
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+              </table:Table>
+            </Panel>
+
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- ===== DUAL TIME WINDOW : OUTBOUND ONLY ========== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showDualTimeWindowsOutboundOnly}" class="sapUiSmallMargin">
+
+        <layout:Splitter>
+          <layout:contentAreas>
+
+            <!-- OUTBOUND 24 HOURS -->
+            <Panel headerText="Outbound (24 hrs)">
+              <table:Table rows="{viewModel>/outboundData24}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData24}.length }" class="sapUiSizeCompact" alternateRowColors="true">
+
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+
+              </table:Table>
+            </Panel>
+
+            <!-- OUTBOUND 48 HOURS -->
+            <Panel headerText="Outbound (48 hrs)">
+              <table:Table rows="{viewModel>/outboundData48}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData48}.length }" class="sapUiSizeCompact" alternateRowColors="true">
+
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+
+              </table:Table>
+            </Panel>
+
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- ===== DUAL TIME WINDOW : INBOUND ONLY =========== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showDualTimeWindowsInboundOnly}" class="sapUiSmallMargin">
+
+        <layout:Splitter>
+          <layout:contentAreas>
+
+            <!-- INBOUND 24 HOURS -->
+            <Panel headerText="Inbound (24 hrs)">
+              <table:Table rows="{viewModel>/inboundData24}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData24}.length }" class="sapUiSizeCompact" alternateRowColors="true">
+
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+
+              </table:Table>
+            </Panel>
+
+            <!-- INBOUND 48 HOURS -->
+            <Panel headerText="Inbound (48 hrs)">
+              <table:Table rows="{viewModel>/inboundData48}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData48}.length }" class="sapUiSizeCompact" alternateRowColors="true">
+
+                <table:columns>
+                  <table:Column>
+                    <Label text="Activity"/>
+                    <table:template>
+                      <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Need"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Current"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column hAlign="Center">
+                    <Label text="Difference"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+
+              </table:Table>
+            </Panel>
+
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+
     </content>
   </Page>
 </mvc:View>
