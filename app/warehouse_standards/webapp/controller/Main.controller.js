@@ -43,6 +43,10 @@ sap.ui.define(
 
       /* ================= ROUTE ================= */
 
+      onNavBack: function () {
+        this.getOwnerComponent().getRouter().navTo("RouteDefault");
+      },
+
       _onRouteMatched: function (oEvent) {
         const sWhseNo = oEvent.getParameter("arguments").lgnum;
         this._currentWarehouse = sWhseNo;

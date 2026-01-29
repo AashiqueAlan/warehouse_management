@@ -1,0 +1,273 @@
+<mvc:View controllerName="plannedworkloaddashboard.controller.Summary"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:layout="sap.ui.layout"
+  xmlns:table="sap.ui.table">
+
+  <Page id="summaryViewPage" showNavButton="true" navButtonPress="onNavBack">
+
+    <!-- ================= HEADER ================= -->
+    <customHeader>
+      <Bar>
+        <contentLeft>
+          <Button icon="sap-icon://nav-back" press="onNavBack"/>
+        </contentLeft>
+        <contentMiddle>
+          <Title text="{viewModel>/reportTypeLabel} - Summary View"/>
+        </contentMiddle>
+      </Bar>
+    </customHeader>
+
+    <content>
+
+      <!-- ================================================= -->
+      <!-- =============== OUTBOUND ONLY VIEW ============== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showOutboundOnly}" class="sapUiSmallMargin">
+        <Panel headerText="Outbound">
+          <content>
+            <table:TreeTable id="outboundOnlyTreeTable" rows="{path: 'viewModel>/outboundData', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" rowsUpdated="onRowsUpdated" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+
+              <table:columns>
+                <table:Column width="auto">
+                  <Label text="Tasks"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Value"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information"  class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+
+
+
+              </table:columns>
+
+            </table:TreeTable>
+          </content>
+        </Panel>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- =============== INBOUND ONLY VIEW =============== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showInboundOnly}" class="sapUiSmallMargin">
+        <Panel headerText="Inbound">
+          <content>
+            <table:TreeTable id="inboundOnlyTreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+
+              <table:columns>
+                <table:Column width="auto">
+                  <Label text="Tasks"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Value"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information"  class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+
+              </table:columns>
+
+            </table:TreeTable>
+          </content>
+        </Panel>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- ================= BOTH VIEW ==================== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showBothPanels}" class="sapUiSmallMargin">
+
+        <!-- Draggable Split View using Splitter -->
+        <layout:Splitter>
+
+          <layout:contentAreas>
+
+            <!-- ================= OUTBOUND ================= -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Outbound">
+                <content>
+                  <table:TreeTable id="outboundTreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/outboundData', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Tasks"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Value"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+
+                    </table:columns>
+
+                  </table:TreeTable>
+                </content>
+              </Panel>
+            </ScrollContainer>
+
+            <!-- ================= INBOUND  ================= -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Inbound">
+                <content>
+                  <table:TreeTable id="inboundTreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Tasks"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Value"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+
+                    </table:columns>
+
+                  </table:TreeTable>
+                </content>
+              </Panel>
+            </ScrollContainer>
+
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- ========== DUAL TIME WINDOW VIEW ============== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showDualTimeWindows}" class="sapUiSmallMargin">
+        <VBox class="sapUiSmallMarginBottom">
+          <Title text="24 Hours Data" level="H3"/>
+          <layout:Splitter>
+            <layout:contentAreas>
+              <!-- 24HR OUTBOUND -->
+              <ScrollContainer height="auto" width="auto" vertical="true">
+                <Panel headerText="Outbound (24 hrs)">
+                  <content>
+                    <table:TreeTable id="outbound24TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/outboundData24', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                      <table:columns>
+                        <table:Column width="auto">
+                          <Label text="Tasks"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                        <table:Column width="auto" hAlign="Center">
+                          <Label text="Value"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                      </table:columns>
+                    </table:TreeTable>
+                  </content>
+                </Panel>
+              </ScrollContainer>
+              <!-- 24HR INBOUND -->
+              <ScrollContainer height="auto" width="auto" vertical="true">
+                <Panel headerText="Inbound (24 hrs)">
+                  <content>
+                    <table:TreeTable id="inbound24TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData24', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                      <table:columns>
+                        <table:Column width="auto">
+                          <Label text="Tasks"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                        <table:Column width="auto" hAlign="Center">
+                          <Label text="Value"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                      </table:columns>
+                    </table:TreeTable>
+                  </content>
+                </Panel>
+              </ScrollContainer>
+            </layout:contentAreas>
+          </layout:Splitter>
+        </VBox>
+
+        <VBox>
+          <Title text="48 Hours Data" level="H3"/>
+          <layout:Splitter>
+            <layout:contentAreas>
+              <!-- 48HR OUTBOUND -->
+              <ScrollContainer height="auto" width="auto" vertical="true">
+                <Panel headerText="Outbound (48 hrs)">
+                  <content>
+                    <table:TreeTable id="outbound48TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/outboundData48', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                      <table:columns>
+                        <table:Column width="auto">
+                          <Label text="Tasks"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                        <table:Column width="auto" hAlign="Center">
+                          <Label text="Value"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                      </table:columns>
+                    </table:TreeTable>
+                  </content>
+                </Panel>
+              </ScrollContainer>
+              <!-- 48HR INBOUND -->
+              <ScrollContainer height="auto" width="auto" vertical="true">
+                <Panel headerText="Inbound (48 hrs)">
+                  <content>
+                    <table:TreeTable id="inbound48TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData48', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                      <table:columns>
+                        <table:Column width="auto">
+                          <Label text="Tasks"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                        <table:Column width="auto" hAlign="Center">
+                          <Label text="Value"/>
+                          <table:template>
+                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          </table:template>
+                        </table:Column>
+                      </table:columns>
+                    </table:TreeTable>
+                  </content>
+                </Panel>
+              </ScrollContainer>
+            </layout:contentAreas>
+          </layout:Splitter>
+        </VBox>
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/core/UIComponent","sap/ui/model/json/JSONModel","plannedworkloaddashboard/model/models"],(e,t,n)=>{"use strict";return e.extend("plannedworkloaddashboard.Component",{metadata:{manifest:"json",interfaces:["sap.ui.core.IAsyncContentCreation"]},init(){e.prototype.init.apply(this,arguments);this.setModel(n.createDeviceModel(),"device");const o=new t({navigationData:null});this.setModel(o,"navigation");this.getRouter().initialize()}})});
+//# sourceMappingURL=Component.js.map

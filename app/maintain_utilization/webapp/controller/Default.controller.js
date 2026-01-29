@@ -3,12 +3,13 @@ sap.ui.define(
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
+    "sap/m/VariantItem",
   ],
-  (Controller,JSONModel, MessageToast) => {
+  (Controller, JSONModel, MessageToast, VariantItem) => {
     "use strict";
 
     return Controller.extend("maintainutilization.controller.Default", {
-       onInit: function () {
+      onInit: function () {
         // View model only (UI state)
         const oViewModel = new JSONModel({
           warehouses: [],
@@ -20,8 +21,288 @@ sap.ui.define(
 
         // Load data explicitly
         this._loadWarehouses();
+        this._oVM = this.byId("variantManagement");
+        this._loadSavedVariants();
+        this._applyDefaultVariant();
+      },
+      _loadSavedVariants: function () {
+        const sStoredvariants = localStorage.getItem(
+          "utilizationWarehouseVariants",
+        );
+        if (sStoredvariants) {
+          try {
+            const aVariants = JSON.parse(sStoredvariants);
+            aVariants.forEach((oVariant) => {
+              const oItem = new VariantItem({
+                key: oVariant.key,
+                title: oVariant.title,
+                author: oVariant.author || "User",
+                favorite: true,
+                visible: true,
+                executeOnSelect: false,
+                rename: true,
+                changeable: true,
+                remove: true,
+              });
+              this._oVM.addItem(oItem);
+            });
+          } catch (e) {
+            console.error("Failed to parse variants", e);
+          }
+        }
       },
 
+      _applyDefaultVariant: function () {
+        const sDefaultkey = localStorage.getItem(
+          "defaultUtilizationWarehouseVariant",
+        );
+        if (sDefaultkey) {
+          this._oVM.setDefaultKey(sDefaultkey);
+          this._oVM.setSelectedKey(sDefaultkey);
+          this._applyVariant(sDefaultkey);
+        }
+      },
+
+      _applyVariant: function (sKey) {
+        if (sKey === "standard") {
+          this.getView()
+            .getModel("view")
+            .setProperty("/selectedWarehouse", null);
+          return;
+        }
+
+        const sStoredVariants = localStorage.getItem(
+          "utilizationWarehouseVariants",
+        );
+
+        if (sStoredVariants) {
+          try {
+            const aVariants = JSON.parse(sStoredVariants);
+            const oVariant = aVariants.find((v) => v.key === sKey);
+
+            if (oVariant && oVariant.warehouse) {
+              this.getView()
+                .getModel("view")
+                .setProperty("/selectedWarehouse", oVariant.warehouse);
+              this.byId("warehouseInput")?.setSelectedKey(oVariant.warehouse);
+              MessageToast.show("Variant '" + oVariant.title + "' applied");
+            }
+          } catch (e) {
+            console.error("Failed to apply variant", e);
+          }
+        }
+      },
+
+      _saveVariantsToStorage: function () {
+        const aItems = this._oVM.getItems();
+        const aVariants = [];
+
+        aItems.forEach((oItem) => {
+          const sKey = oItem.getKey();
+
+          if (sKey === "standard") {
+            return;
+          }
+
+          const sStoredVariants = localStorage.getItem(
+            "utilizationWarehouseVariants",
+          );
+          let sWarehouse = null;
+
+          if (sStoredVariants) {
+            try {
+              const aStoredVariants = JSON.parse(sStoredVariants);
+              const oStored = aStoredVariants.find((v) => v.key === sKey);
+              if (oStored) {
+                sWarehouse = oStored.warehouse;
+              }
+            } catch (e) {
+              console.error("Error parsing stored variants", e);
+            }
+          }
+
+          aVariants.push({
+            key: sKey,
+            title: oItem.getTitle(),
+            author: oItem.getAuthor(),
+            warehouse: sWarehouse,
+          });
+        });
+
+        localStorage.setItem(
+          "utilizationWarehouseVariants",
+          JSON.stringify(aVariants),
+        );
+      },
+
+      _checkCurrentVariant: function () {
+        const sSelectedKey = this._oVM.getSelectedKey();
+        const oItem = this._oVM.getItemByKey(sSelectedKey);
+
+        if (!oItem) {
+          const sKey = this._oVM.getStandardVariantKey();
+          if (sKey) {
+            this._oVM.setSelectedKey(sKey);
+          }
+        }
+      },
+
+      _updateItems: function (mParams) {
+        if (mParams.deleted) {
+          mParams.deleted.forEach((sKey) => {
+            const oItem = this._oVM.getItemByKey(sKey);
+            if (oItem) {
+              this._oVM.removeItem(oItem);
+              oItem.destroy();
+            }
+          });
+        }
+
+        if (mParams.renamed) {
+          mParams.renamed.forEach((oRenamed) => {
+            const oItem = this._oVM.getItemByKey(oRenamed.key);
+            if (oItem) {
+              oItem.setTitle(oRenamed.name);
+            }
+          });
+        }
+
+        if (mParams.hasOwnProperty("def")) {
+          this._oVM.setDefaultKey(mParams.def);
+          localStorage.setItem(
+            "defaultUtilizationWarehouseVariant",
+            mParams.def,
+          );
+        }
+
+        this._checkCurrentVariant();
+      },
+
+      _createNewItem: function (mParams) {
+        const sKey = "variant_" + Date.now();
+        const sSelectedWarehouse = this.getView()
+          .getModel("view")
+          .getProperty("/selectedWarehouse");
+
+        if (!sSelectedWarehouse) {
+          MessageToast.show("Please select a warehouse before saving variant");
+          return;
+        }
+
+        const oItem = new VariantItem({
+          key: sKey,
+          title: mParams.name,
+          executeOnSelect: false,
+          author: "User",
+          favorite: true,
+          changeable: true,
+          remove: true,
+          rename: true,
+        });
+
+        if (mParams.def) {
+          this._oVM.setDefaultKey(sKey);
+          localStorage.setItem("defaultUtilizationWarehouseVariant", sKey);
+        }
+
+        this._oVM.addItem(oItem);
+
+        const sStoredVariants = localStorage.getItem(
+          "utilizationWarehouseVariants",
+        );
+        let aVariants = [];
+
+        if (sStoredVariants) {
+          try {
+            aVariants = JSON.parse(sStoredVariants);
+          } catch (e) {
+            console.error("Failed to parse variants", e);
+          }
+        }
+
+        aVariants.push({
+          key: sKey,
+          title: mParams.name,
+          author: "User",
+          warehouse: sSelectedWarehouse,
+        });
+
+        localStorage.setItem(
+          "utilizationWarehouseVariants",
+          JSON.stringify(aVariants),
+        );
+
+        MessageToast.show("Variant '" + mParams.name + "' saved successfully");
+        this._oVM.setModified(false);
+      },
+
+      onVariantSelect: function (oEvent) {
+        const sKey = oEvent.getParameter("key");
+        this._applyVariant(sKey);
+        this._oVM.setModified(false);
+      },
+
+      onVariantSave: function (oEvent) {
+        const mParams = oEvent.getParameters();
+
+        if (mParams.overwrite) {
+          const oItem = this._oVM.getItemByKey(mParams.key);
+          const sSelectedWarehouse = this.getView()
+            .getModel("view")
+            .getProperty("/selectedWarehouse");
+
+          if (!sSelectedWarehouse) {
+            MessageToast.show(
+              "Please select a warehouse before saving variant",
+            );
+            return;
+          }
+
+          const sStoredVariants = localStorage.getItem(
+            "utilizationWarehouseVariants",
+          );
+          let aVariants = [];
+
+          if (sStoredVariants) {
+            try {
+              aVariants = JSON.parse(sStoredVariants);
+            } catch (e) {
+              console.error("Failed to parse variants", e);
+            }
+          }
+
+          const oVariant = aVariants.find((v) => v.key === mParams.key);
+          if (oVariant) {
+            oVariant.warehouse = sSelectedWarehouse;
+            oVariant.title = mParams.name;
+          }
+
+          localStorage.setItem(
+            "utilizationWarehouseVariants",
+            JSON.stringify(aVariants),
+          );
+
+          if (mParams.def) {
+            this._oVM.setDefaultKey(mParams.key);
+            localStorage.setItem(
+              "defaultUtilizationWarehouseVariant",
+              mParams.key,
+            );
+          }
+
+          MessageToast.show("Variant '" + oItem.getTitle() + "' updated");
+          this._oVM.setModified(false);
+        } else {
+          this._createNewItem(mParams);
+        }
+      },
+
+      onVariantManage: function (oEvent) {
+        const mParams = oEvent.getParameters();
+        this._updateItems(mParams);
+        this._saveVariantsToStorage();
+        MessageToast.show("Variants updated successfully");
+      },
       _loadWarehouses: function () {
         const oODataModel = this.getOwnerComponent().getModel();
         const oViewModel = this.getView().getModel("view");
@@ -48,6 +329,7 @@ sap.ui.define(
         this.getView()
           .getModel("view")
           .setProperty("/selectedWarehouse", oItem ? oItem.getKey() : null);
+        this._oVM.setModified(true);
       },
 
       onContinue: function () {
@@ -65,5 +347,5 @@ sap.ui.define(
         this.getOwnerComponent().getRouter().navTo("Main", { lgnum: sLgnum });
       },
     });
-  }
+  },
 );

@@ -1,0 +1,242 @@
+<mvc:View controllerName="plannedworkloaddashboard.controller.LaborNeed"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:layout="sap.ui.layout"
+  xmlns:table="sap.ui.table">
+
+  <Page id="laborViewPage" showNavButton="true" navButtonPress="onNavBack">
+
+    <!-- ================= HEADER ================= -->
+    <customHeader>
+      <Bar>
+        <contentLeft>
+          <Button icon="sap-icon://nav-back" press="onNavBack"/>
+        </contentLeft>
+        <contentMiddle>
+          <Title text="{viewModel>/reportTypeLabel} - Labor Needs Plan View"/>
+        </contentMiddle>
+      </Bar>
+    </customHeader>
+
+    <content>
+
+      <!-- ================================================= -->
+      <!-- =============== OUTBOUND ONLY VIEW ============== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showOutboundOnly}" class="sapUiSmallMargin">
+        <Panel headerText="Outbound">
+          <content>
+            <table:Table
+              rows="{viewModel>/outboundData}"
+              selectionMode="None"
+              class="sapUiSizeCompact"
+              alternateRowColors="true"
+              enableColumnReordering="false"
+              visibleRowCount="{= ${viewModel>/outboundData}.length }">
+
+              <table:columns>
+                <table:Column width="auto">
+                  <Label text="Activity"/>
+                  <table:template>
+                    <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Need"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Current"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Difference"/>
+                  <table:template>
+                    <ObjectStatus
+                      text="{viewModel>Difference}"
+                      state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
+                      class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+              </table:columns>
+
+            </table:Table>
+          </content>
+        </Panel>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- =============== INBOUND ONLY VIEW =============== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showInboundOnly}" class="sapUiSmallMargin">
+        <Panel headerText="Inbound">
+          <content>
+            <table:Table
+              rows="{viewModel>/inboundData}"
+              selectionMode="None"
+              class="sapUiSizeCompact"
+              alternateRowColors="true"
+              enableColumnReordering="false"
+              visibleRowCount="{= ${viewModel>/inboundData}.length }">
+
+              <table:columns>
+                <table:Column width="auto">
+                  <Label text="Activity"/>
+                  <table:template>
+                    <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Need"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Current"/>
+                  <table:template>
+                    <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+
+                <table:Column width="auto" hAlign="Center">
+                  <Label text="Difference"/>
+                  <table:template>
+                    <ObjectStatus
+                      text="{viewModel>Difference}"
+                      state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
+                      class="boldStatus"/>
+                  </table:template>
+                </table:Column>
+              </table:columns>
+
+            </table:Table>
+          </content>
+        </Panel>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- ================= BOTH VIEW ==================== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showBothPanels}" class="sapUiSmallMargin">
+
+        <!-- Draggable Split View using Splitter -->
+        <layout:Splitter>
+
+          <layout:contentAreas>
+
+            <!-- ================= OUTBOUND (LEFT PANEL) ================= -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Outbound">
+                <content>
+                  <table:Table
+                    rows="{viewModel>/outboundData}"
+                    selectionMode="None"
+                    class="sapUiSizeCompact"
+                    alternateRowColors="true"
+                    enableColumnReordering="false"
+                    visibleRowCount="{= ${viewModel>/outboundData}.length }">
+
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Activity"/>
+                        <table:template>
+                          <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Need"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Current"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Difference"/>
+                        <table:template>
+                          <ObjectStatus
+                            text="{viewModel>Difference}"
+                            state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
+                            class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                    </table:columns>
+
+                  </table:Table>
+                </content>
+              </Panel>
+            </ScrollContainer>
+
+            <!-- ================= INBOUND (RIGHT PANEL) ================= -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Inbound">
+                <content>
+                  <table:Table
+                    rows="{viewModel>/inboundData}"
+                    selectionMode="None"
+                    class="sapUiSizeCompact"
+                    alternateRowColors="true"
+                    enableColumnReordering="false"
+                    visibleRowCount="{= ${viewModel>/inboundData}.length }">
+
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Activity"/>
+                        <table:template>
+                          <ObjectStatus text="{= ${viewModel>QueueDescription} ? ${viewModel>QueueDescription} : ${viewModel>Queue} }" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Need"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>Need}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Current"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>Current}" state="Success" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Difference"/>
+                        <table:template>
+                          <ObjectStatus
+                            text="{viewModel>Difference}"
+                            state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"
+                            class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                    </table:columns>
+
+                  </table:Table>
+                </content>
+              </Panel>
+            </ScrollContainer>
+
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

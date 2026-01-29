@@ -1,0 +1,13 @@
+/* Enter your custom styles here */
+.boldStatus .sapMObjStatusText {
+    font-weight: 700;
+    /* or bold */
+}
+
+.parentRowBold .sapMObjStatusText {
+  font-weight: 700 !important;
+}
+
+.childRowNormal .sapMObjStatusText {
+  font-weight: normal !important;
+}

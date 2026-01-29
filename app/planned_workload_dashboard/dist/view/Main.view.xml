@@ -1,0 +1,106 @@
+<mvc:View xmlns:odata="sap.ui.comp.odata" controllerName="plannedworkloaddashboard.controller.Main"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout">
+    <Page id="page" title="EWM Labor Management - Planned Workload Dashboard" class="sapUiSizeCompact">
+        <customHeader>
+            <Bar>
+                <contentMiddle>
+                    <VariantManagement id="variantManagement" select=".onVariantSelect" save=".onVariantSave" manage=".onVariantManage" showSetAsDefault="true" showExecuteOnSelection="false" popoverTitle="Dashboard Variants">
+                        <items>
+                            <VariantItem key="standard" title="Standard" author="System" favorite="true" visible="true" executeOnSelect="false" rename="false" changeable="false" remove="false" />
+                        </items>
+                    </VariantManagement>
+                </contentMiddle>
+            </Bar>
+        </customHeader>
+
+        <content>
+            <!-- Centered Container -->
+            <FlexBox justifyContent="Center" alignItems="Start" class="sapUiSmallMarginTop">
+                <!-- ================= SELECTION PANEL ================= -->
+                <Panel headerText="Selection Criteria" class="sapUiResponsiveMargin" width="auto">
+                    <content>
+                        <VBox class="sapUiMediumMargin">
+                            <!-- Warehouse Number -->
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <Label text="Warehouse Number:" required="true" class="sapUiTinyMarginEnd" width="200px" />
+                                <ComboBox id="warehouseSelect" selectedKey="{viewModel>/selectedWarehouse}" forceSelection="true" items="{/Warehouses}" change="onWarehouseChange" width="300px" class="sapUiSizeCompact">
+                                    <core:Item key="" text="--Select Warehouse--" />
+                                    <core:Item key="{Lgnum}" text="{Lgnum} - {Lnumt}" />
+                                </ComboBox>
+                            </HBox>
+
+                            <!-- Queue -->
+                            <!-- <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <Label text="Queue:" class="sapUiTinyMarginEnd" width="200px" />
+                                <MultiComboBox id="queueMultiSelect" selectedKeys="{viewModel>/selectedQueues}" items="{/Queues}" selectionChange="onQueueMultiSelectSelectionChange" width="300px" class="sapUiSizeCompact">
+                                    <core:Item key="{Queue}" text="{Queue} - {Text}" />
+                                </MultiComboBox>
+                            </HBox> -->
+
+                            <!-- Wave Date & Time -->
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <Label text="Wave:" class="sapUiTinyMarginEnd" width="200px" />
+                                <DatePicker id="waveDatePicker" value="{viewModel>/waveDate}" change="onWaveDateDatePickerChange" valueFormat="yyyy-MM-dd" displayFormat="MM/dd/yyyy" placeholder="Select Date" width="150px" class="sapUiTinyMarginEnd sapUiSizeCompact" />
+                                <TimePicker id="waveTimePicker" value="{viewModel>/waveTime}"  valueFormat="HH:mm:ss" displayFormat="HH:mm:ss" placeholder="Time" width="120px" class="sapUiSizeCompact" />
+                            </HBox>
+
+                            <!-- Pick Complete Date & Time -->
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <Label text="Pick Complete:" class="sapUiTinyMarginEnd" width="200px" />
+                                <DatePicker id="PickDatePicker" value="{viewModel>/pickDate}"  valueFormat="yyyy-MM-dd" displayFormat="MM/dd/yyyy" placeholder="Select Date" width="150px" class="sapUiTinyMarginEnd sapUiSizeCompact" />
+                                <TimePicker id="PickTimePicker" value="{viewModel>/pickTime}" valueFormat="HH:mm:ss" displayFormat="HH:mm:ss" placeholder="Time" width="120px" class="sapUiSizeCompact" />
+                            </HBox>
+
+                            <!-- Include in Report -->
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <Label text="Include in Report:" class="sapUiTinyMarginEnd" width="200px" />
+                                <RadioButtonGroup id="reportTypeGroup" selectedIndex="2" select="onReportTypeSelect" columns="3">
+                                    <RadioButton text="Inbound Only" />
+                                    <RadioButton text="Outbound Only" />
+                                    <RadioButton text="Both" />
+                                </RadioButtonGroup>
+                            </HBox>
+
+
+                            <!-- Report View -->
+
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <Label text="Report View:" class="sapUiTinyMarginEnd" width="200px" />
+                                <RadioButtonGroup id="viewTypeGroup" selectedIndex="0" select="onViewTypeSelect" columns="3">
+                                    <RadioButton text="Summary View" />
+                                    <RadioButton text="Shift View" />
+                                    <RadioButton text="Labor Needs VS Plan View" />
+                                </RadioButtonGroup>
+                            </HBox>
+
+                            <!-- Time Window -->
+                            <HBox class="sapUiTinyMarginBottom" alignItems="Center">
+                                <Label text="Time Window:" class="sapUiTinyMarginEnd" width="200px" />
+                                <HBox>
+                                    <CheckBox text="48 Hours" selected="{viewModel>/hours48}" select="onHoursCheckboxSelect" />
+                                    <CheckBox text="24 Hours" selected="{viewModel>/hours24}" visible="{viewModel>/show24Hours}" select="onHoursCheckboxSelect" />
+                                </HBox>
+                            </HBox>
+
+                            <!-- Buttons -->
+                            <HBox class="sapUiMediumMarginTop" justifyContent="End">
+                                <ToolbarSpacer width="200px"/>
+                                <Button text="Generate Report" type="Emphasized" icon="sap-icon://generate-shortcut" press="onGenerateReport" enabled="{= !${viewModel>/isLoading} }" class="sapUiTinyMarginEnd sapUiSizeCompact" />
+                                <Button text="Clear" icon="sap-icon://clear-filter" press="onClear" enabled="{= !${viewModel>/isLoading} }" class="sapUiSizeCompact" />
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Panel>
+            </FlexBox>
+
+            <!-- ================= LOADING INDICATOR ================= -->
+            <FlexBox visible="{viewModel>/isLoading}" justifyContent="Center" alignItems="Center" height="200px">
+                <BusyIndicator size="2rem" text="Loading data from ECC..." />
+            </FlexBox>
+        </content>
+    </Page>
+</mvc:View>

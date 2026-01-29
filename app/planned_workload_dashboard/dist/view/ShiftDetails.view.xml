@@ -1,0 +1,411 @@
+<mvc:View controllerName="plannedworkloaddashboard.controller.ShiftDetails"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:layout="sap.ui.layout"
+  xmlns:table="sap.ui.table"
+  xmlns:rowmodes="sap.ui.table.rowmodes">
+
+
+  <Page id="shiftDetailsPage" showNavButton="true" navButtonPress="onNavBack">
+
+
+    <!-- ================= HEADER ================= -->
+    <customHeader>
+      <Bar>
+        <contentLeft>
+          <Button icon="sap-icon://nav-back" press="onNavBack"/>
+        </contentLeft>
+        <contentMiddle>
+          <Title text="{viewModel>/reportTypeLabel} - Shift View"/>
+        </contentMiddle>
+      </Bar>
+    </customHeader>
+
+
+    <content>
+
+
+      <!-- ================================================= -->
+      <!-- =============== OUTBOUND ONLY VIEW ============== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showOutboundOnly}" class="sapUiSmallMargin">
+
+        <!-- Message for no data -->
+        <MessageStrip text="No data available for the selected criteria" type="Information" showIcon="true" visible="{= !${viewModel>/hasOutboundData} }" class="sapUiSmallMarginBottom"/>
+
+        <VBox items="{viewModel>/outboundShifts}" visible="{viewModel>/hasOutboundData}">
+          <Panel class="sapUiMediumMarginBottom">
+
+            <headerToolbar>
+              <Toolbar>
+                <ToolbarSpacer/>
+                <Title text="Shift {viewModel>name}" level="H3"/>
+                <ToolbarSpacer/>
+              </Toolbar>
+            </headerToolbar>
+
+            <content>
+              <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
+
+                <table:columns>
+                  <table:Column width="auto">
+                    <Label text="Tasks"/>
+                    <table:template>
+                      <ObjectStatus text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Target"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus" />
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Planned Capacity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Available Work"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Error" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Current Completed"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <!-- <table:Column width="auto" hAlign="Center">
+                    <Label text="Completed vs Plan"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>CompleVsPlan}" state="None" class="boldStatus"/>
+                    </table:template>
+                  </table:Column> -->
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Delta"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Delta}" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Volume Added"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>VolumeAdded}" state="Error" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                    </table:template>
+                  </table:Column>
+                </table:columns>
+
+              </table:Table>
+
+            </content>
+          </Panel>
+        </VBox>
+      </VBox>
+
+
+      <!-- ================================================= -->
+      <!-- =============== INBOUND ONLY VIEW =============== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showInboundOnly}" class="sapUiSmallMargin">
+
+        <!-- Message for no data -->
+        <MessageStrip text="No data available for the selected criteria" type="Information" showIcon="true" visible="{= !${viewModel>/hasInboundData} }" class="sapUiSmallMarginBottom"/>
+
+        <VBox items="{viewModel>/inboundShifts}" visible="{viewModel>/hasInboundData}">
+          <Panel class="sapUiMediumMarginBottom">
+
+            <headerToolbar>
+              <Toolbar>
+                <ToolbarSpacer/>
+                <Title text="Shift {viewModel>name}" level="H3"/>
+                <ToolbarSpacer/>
+              </Toolbar>
+            </headerToolbar>
+
+            <content>
+              <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
+
+                <table:columns>
+                  <table:Column width="auto">
+                    <Label text="Tasks"/>
+                    <table:template>
+                      <ObjectStatus text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Target"/>
+                    <table:template>
+                      <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Planned Capacity"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <!-- <table:Column width="auto" hAlign="Center">
+                    <Label text="Available Work"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Error" class="boldStatus"/>
+                    </table:template>
+                  </table:Column> -->
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Current Completed"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <!-- <table:Column width="auto" hAlign="Center">
+                    <Label text="Completed vs Plan"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>CompleVsPlan}" state="None" class="boldStatus"/>
+                    </table:template>
+                  </table:Column> -->
+
+                  <table:Column width="auto" hAlign="Center">
+                    <Label text="Delta"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>Delta}" class="boldStatus"/>
+                    </table:template>
+                  </table:Column>
+
+                  <!-- <table:Column width="auto" hAlign="Center">
+                    <Label text="Volume Added"/>
+                    <table:template>
+                      <ObjectStatus text="{viewModel>VolumeAdded}" state="Error" class="boldStatus"/>
+                    </table:template>
+                  </table:Column> -->
+                </table:columns>
+
+              </table:Table>
+
+            </content>
+          </Panel>
+        </VBox>
+      </VBox>
+
+
+      <!-- ================================================= -->
+      <!-- ================= BOTH VIEW ==================== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showBothPanels}" class="sapUiSmallMargin">
+
+
+        <!-- Draggable Split View using Splitter -->
+        <layout:Splitter>
+
+          <layout:contentAreas>
+
+            <!-- ================= OUTBOUND ================= -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Outbound">
+                <content>
+
+
+                  <VBox items="{viewModel>/outboundShifts}">
+                    <Panel class="sapUiMediumMarginBottom">
+
+
+                      <headerToolbar >
+                        <Toolbar>
+                          <ToolbarSpacer/>
+                          <Title text="Shift {viewModel>name}" level="H4"/>
+                          <ToolbarSpacer/>
+                        </Toolbar>
+                      </headerToolbar>
+
+
+                      <content>
+                        <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
+
+
+
+                          <table:columns>
+                            <table:Column width="auto">
+                              <Label text="Tasks"/>
+                              <table:template>
+                                <ObjectStatus text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Target"/>
+                              <table:template>
+                                <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Planned Capacity"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Available Work"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Error" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Current Completed"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <!-- <table:Column width="auto" hAlign="Center">
+                              <Label text="Completed vs Plan"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>CompleVsPlan}" state="None" class="boldStatus"/>
+                              </table:template>
+                            </table:Column> -->
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Delta"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>Delta}" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Volume Added"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>VolumeAdded}" state="Error" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+                          </table:columns>
+
+
+                        </table:Table>
+                      </content>
+
+                    </Panel>
+                  </VBox>
+                </content>
+              </Panel>
+            </ScrollContainer>
+
+
+            <!-- ================= INBOUND  ================= -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Inbound">
+                <content>
+
+
+                  <VBox items="{viewModel>/inboundShifts}">
+                    <Panel class="sapUiMediumMarginBottom">
+
+
+                      <headerToolbar>
+                        <Toolbar>
+                          <ToolbarSpacer/>
+                          <Title text="Shift {viewModel>name}" level="H4"/>
+                          <ToolbarSpacer/>
+                        </Toolbar>
+                      </headerToolbar>
+
+
+                      <content>
+                        <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
+
+
+                          <table:columns>
+                            <table:Column width="auto">
+                              <Label text="Tasks"/>
+                              <table:template>
+                                <ObjectStatus  text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }"  class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Target"/>
+                              <table:template>
+                                <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Planned Capacity"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <!-- <table:Column width="auto" hAlign="Center">
+                              <Label text="Available Work"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Error" class="boldStatus"/>
+                              </table:template>
+                            </table:Column> -->
+
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Current Completed"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+
+                            <!-- <table:Column width="auto" hAlign="Center">
+                              <Label text="Completed vs Plan"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>CompleVsPlan}" state="None" class="boldStatus"/>
+                              </table:template>
+                            </table:Column> -->
+
+                            <table:Column width="auto" hAlign="Center">
+                              <Label text="Delta"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>Delta}" class="boldStatus"/>
+                              </table:template>
+                            </table:Column>
+
+                            <!-- <table:Column width="auto" hAlign="Center">
+                              <Label text="Volume Added"/>
+                              <table:template>
+                                <ObjectStatus text="{viewModel>VolumeAdded}" state="Error" class="boldStatus"/>
+                              </table:template>
+                            </table:Column> -->
+                          </table:columns>
+                        </table:Table>
+                      </content>
+                    </Panel>
+                  </VBox>
+                </content>
+              </Panel>
+            </ScrollContainer>
+
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+    </content>
+  </Page>
+</mvc:View>

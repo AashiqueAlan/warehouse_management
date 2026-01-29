@@ -6,7 +6,6 @@ sap.ui.define(
     "sap/m/MessageBox",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
-    "sap/ui/model/Sorter",
   ],
   function (
     Controller,
@@ -15,7 +14,6 @@ sap.ui.define(
     MessageBox,
     Filter,
     FilterOperator,
-    Sorter
   ) {
     "use strict";
 
@@ -45,6 +43,46 @@ sap.ui.define(
 
       /* ================= ROUTE ================= */
 
+      onNavBack: function () {
+        this.getOwnerComponent().getRouter().navTo("RouteDefault");
+      },
+
+      _loadInitialProcessors: function (sWhseNo) {
+        const oModel = this.getOwnerComponent().getModel();
+        const oVm = this.getView().getModel("ViewModel");
+
+        const oListBinding = oModel.bindList(
+          "/ReadWhsProcessor",
+          null,
+          null,
+          [new Filter("WarehouseNumber", FilterOperator.EQ, sWhseNo)],
+          { $expand: "NavWhseProcessors" },
+        );
+
+        oListBinding.requestContexts(0, 1).then((aCtx) => {
+          if (!aCtx.length) return;
+
+          const aProcessors = aCtx[0].getObject().NavWhseProcessors || [];
+
+          const aRows = aProcessors.map((p, i) => ({
+            SNo: i + 1,
+            WhseNo: p.WarehouseNumber,
+            Shift: p.Shift,
+            Resource: p.Processor,
+            Queue: "",
+            UtilizationRate: 0,
+            __state: "NEW",
+            __source: "BACKEND",
+          }));
+
+          oVm.setProperty("/rows", aRows);
+          oVm.setProperty("/originalRows", []);
+          oVm.setProperty("/editMode", false);
+          oVm.setProperty("/toggleeditbtn", true);
+          oVm.setProperty("/canAddRow", true);
+        });
+      },
+
       _onRouteMatched: function (oEvent) {
         const sWhseNo = oEvent.getParameter("arguments").lgnum;
         this._currentWarehouse = sWhseNo;
@@ -58,9 +96,12 @@ sap.ui.define(
 
         // Load data
         this._loadQueues(sWhseNo);
-        this._loadShifts();
+        this._loadShifts(sWhseNo);
         this._loadResources(sWhseNo);
-        this._loadUtilizationRates(sWhseNo);
+        // this._loadUtilizationRates(sWhseNo);
+
+        // this._loadInitialProcessors(sWhseNo);
+        this._loadWarehouseData(sWhseNo);
       },
 
       /* ================= LOADERS ================= */
@@ -87,45 +128,29 @@ sap.ui.define(
             oVm.setProperty("/queues", []);
           });
       },
-      _loadShifts: function () {
+
+      _loadShifts: function (sWhseNo) {
+        const oModel = this.getOwnerComponent().getModel();
         const oVm = this.getView().getModel("ViewModel");
 
-        // TEMP: Backend ShiftDayNumbers not available yet
-        // Replace with OData call when service is ready
-        const aFallbackShifts = [
-          {
-            Timeint: "MORNING",
-            Timemodel: "Morning Shift",
-          },
-          {
-            Timeint: "EVENING",
-            Timemodel: "Evening Shift",
-          },
-        ];
-
-        oVm.setProperty("/shifts", aFallbackShifts);
+        oModel
+          .bindList("/ShiftDayNumbers", null, null, [
+            new Filter("WarehouseNumber", FilterOperator.EQ, sWhseNo),
+          ])
+          .requestContexts(0, Infinity)
+          .then(function (aCtx) {
+            const aShifts = aCtx.map(function (c) {
+              return c.getObject();
+            });
+            oVm.setProperty("/shifts", aShifts);
+            console.log("Shifts loaded:", aShifts.length);
+          })
+          .catch(function (err) {
+            console.error("Failed to load shifts:", err);
+            MessageToast.show("Failed to load shifts.");
+            oVm.setProperty("/shifts", []);
+          });
       },
-
-      // _loadShifts: function () {
-      //   const oModel = this.getOwnerComponent().getModel();
-      //   const oVm = this.getView().getModel("ViewModel");
-
-      //   oModel
-      //     .bindList("/ShiftDayNumbers")
-      //     .requestContexts(0, Infinity)
-      //     .then(function (aCtx) {
-      //       const aShifts = aCtx.map(function (c) {
-      //         return c.getObject();
-      //       });
-      //       oVm.setProperty("/shifts", aShifts);
-      //       console.log("Shifts loaded:", aShifts.length);
-      //     })
-      //     .catch(function (err) {
-      //       console.error("Failed to load shifts:", err);
-      //       MessageToast.show("Failed to load shifts.");
-      //       oVm.setProperty("/shifts", []);
-      //     });
-      // },
 
       _loadResources: function (sWhseNo) {
         const oModel = this.getOwnerComponent().getModel();
@@ -133,7 +158,7 @@ sap.ui.define(
 
         oModel
           .bindList("/Resources", null, null, [
-            new Filter("Lgnum", FilterOperator.EQ, sWhseNo),
+            new Filter("WarehouseNumber", FilterOperator.EQ, sWhseNo),
           ])
           .requestContexts(0, Infinity)
           .then(function (aCtx) {
@@ -149,76 +174,134 @@ sap.ui.define(
             oVm.setProperty("/resources", []);
           });
       },
-
-      _loadUtilizationRates: function (sWhseNo) {
+      _loadWarehouseData: function (sWhseNo) {
         const oModel = this.getOwnerComponent().getModel();
         const oVm = this.getView().getModel("ViewModel");
 
         oModel
-          .bindList(
-            "/UtilizationRates",
-            null,
-            [new Sorter("createdAt", false)],
-            [new Filter("WhseNo", FilterOperator.EQ, sWhseNo)]
-          )
+          .bindList("/UtilizationRates", null, null, [
+            new Filter("WhseNo", FilterOperator.EQ, sWhseNo),
+          ])
           .requestContexts(0, Infinity)
-          .then(function (aCtx) {
-            const aRows = aCtx.map(function (c, i) {
-              const oData = c.getObject();
-              return {
-                SNo: i + 1,
+          .then((aCtx) => {
+            if (aCtx.length > 0) {
+              //  CASE 1: DB DATA EXISTS
+              const aRows = aCtx.map((c, i) => {
+                const o = c.getObject();
+                return {
+                  SNo: i + 1,
+                  __rowKey: `${o.WhseNo}|${o.Shift}|${o.Resource}|${o.Queue}`,
+                  WhseNo: o.WhseNo,
+                  Shift: o.Shift,
+                  Resource: o.Resource,
+                  Queue: o.Queue,
+                  UtilizationRate: o.UtilizationRate,
+                  __state: "UNCHANGED",
+                  __source: "DB",
+                };
+              });
 
-                WhseNo: oData.WhseNo,
-                Shift: oData.Shift,
-                Resource: oData.Resource,
-                Queue: oData.Queue,
-                UtilizationRate: oData.UtilizationRate,
-                createdAt: oData.createdAt,
-                __state: "UNCHANGED",
-              };
-            });
-
-            oVm.setProperty("/rows", aRows);
-
-            //  Clone WITHOUT oContext to avoid circular reference
-            const aOriginalRows = aRows.map((row, index) => ({
-              SNo: row.SNo,
-              WhseNo: row.WhseNo,
-              origShift: row.Shift,
-              origResource: row.Resource,
-              origQueue: row.Queue,
-              Shift: row.Shift,
-              Resource: row.Resource,
-              Queue: row.Queue,
-              UtilizationRate: row.UtilizationRate,
-              createdAt: row.createdAt,
-              __state: row.__state,
-              origIndex: index,
-            }));
-            oVm.setProperty("/originalRows", aOriginalRows);
-
-            if (aRows.length === 0) {
-              oVm.setProperty("/editMode", true);
-              oVm.setProperty("/toggleeditbtn", false);
-              oVm.setProperty("/canAddRow", true);
-              MessageToast.show(
-                "No existing records found for warehouse " + sWhseNo
+              oVm.setProperty("/rows", aRows);
+              oVm.setProperty(
+                "/originalRows",
+                aRows.map((r) => ({
+                  __rowKey: r.__rowKey,
+                  origShift: r.Shift,
+                  origResource: r.Resource,
+                  origQueue: r.Queue,
+                  UtilizationRate: r.UtilizationRate,
+                })),
               );
-            } else {
+
               oVm.setProperty("/editMode", false);
               oVm.setProperty("/toggleeditbtn", true);
               oVm.setProperty("/canAddRow", false);
+            } else {
+              //  CASE 2: NO DB DATA → BACKEND FALLBACK
+              this._loadInitialProcessors(sWhseNo);
             }
           })
-          .catch(function (err) {
-            console.error("Failed to load utilization rates", err);
-            MessageToast.show("Failed to load data. You can add new rows.");
-            oVm.setProperty("/rows", []);
-            oVm.setProperty("/originalRows", []);
-            oVm.setProperty("/editMode", true);
-            oVm.setProperty("/toggleeditbtn", false);
+          .catch((e) => {
+            console.error("Failed to load warehouse data", e);
+            MessageToast.show("Failed to load warehouse data");
           });
       },
+
+      // _loadUtilizationRates: function (sWhseNo) {
+      //   const oModel = this.getOwnerComponent().getModel();
+      //   const oVm = this.getView().getModel("ViewModel");
+
+      //   oModel
+      //     .bindList("/UtilizationRates", null, null, [
+      //       new Filter("WhseNo", FilterOperator.EQ, sWhseNo),
+      //     ])
+      //     .requestContexts(0, Infinity)
+      //     .then(function (aCtx) {
+      //       const aRows = aCtx.map(function (c, i) {
+      //         const oData = c.getObject();
+      //         // Create unique key for matching original rows
+      //         const sRowKey =
+      //           oData.WhseNo +
+      //           "|" +
+      //           oData.Shift +
+      //           "|" +
+      //           oData.Resource +
+      //           "|" +
+      //           oData.Queue;
+      //         return {
+      //           SNo: i + 1,
+      //           __rowKey: sRowKey,
+      //           WhseNo: oData.WhseNo,
+      //           Shift: oData.Shift,
+      //           Resource: oData.Resource,
+      //           Queue: oData.Queue,
+      //           UtilizationRate: oData.UtilizationRate,
+      //           createdAt: oData.createdAt,
+      //           __state: "UNCHANGED",
+      //         };
+      //       });
+
+      //       oVm.setProperty("/rows", aRows);
+
+      //       //  Clone WITHOUT oContext to avoid circular reference
+      //       const aOriginalRows = aRows.map((row) => ({
+      //         SNo: row.SNo,
+      //         __rowKey: row.__rowKey,
+      //         WhseNo: row.WhseNo,
+      //         origShift: row.Shift,
+      //         origResource: row.Resource,
+      //         origQueue: row.Queue,
+      //         Shift: row.Shift,
+      //         Resource: row.Resource,
+      //         Queue: row.Queue,
+      //         UtilizationRate: row.UtilizationRate,
+      //         createdAt: row.createdAt,
+      //         __state: row.__state,
+      //       }));
+      //       oVm.setProperty("/originalRows", aOriginalRows);
+
+      //       if (aRows.length === 0) {
+      //         oVm.setProperty("/editMode", true);
+      //         oVm.setProperty("/toggleeditbtn", false);
+      //         oVm.setProperty("/canAddRow", true);
+      //         MessageToast.show(
+      //           "No existing records found for warehouse " + sWhseNo,
+      //         );
+      //       } else {
+      //         oVm.setProperty("/editMode", false);
+      //         oVm.setProperty("/toggleeditbtn", true);
+      //         oVm.setProperty("/canAddRow", false);
+      //       }
+      //     })
+      //     .catch(function (err) {
+      //       console.error("Failed to load utilization rates", err);
+      //       MessageToast.show("Failed to load data. You can add new rows.");
+      //       oVm.setProperty("/rows", []);
+      //       oVm.setProperty("/originalRows", []);
+      //       oVm.setProperty("/editMode", true);
+      //       oVm.setProperty("/toggleeditbtn", false);
+      //     });
+      // },
 
       /* ================= ACTIONS ================= */
 
@@ -241,6 +324,7 @@ sap.ui.define(
           Queue: "",
           UtilizationRate: 0,
           __state: "NEW",
+          __source: "UI",
         });
 
         oVm.setProperty("/rows", aRows);
@@ -257,12 +341,12 @@ sap.ui.define(
             .getBindingContext("ViewModel")
             .getPath()
             .split("/")[2],
-          10
+          10,
         );
 
         const deletedRow = aRows[iIndex];
 
-        // EXACT WarehouseStandards pattern
+        //  WarehouseStandards pattern
         if (deletedRow.__state === "UNCHANGED") {
           const aDeletedRows = oVm.getProperty("/deletedRows") || [];
           aDeletedRows.push(deletedRow);
@@ -270,6 +354,8 @@ sap.ui.define(
         }
 
         aRows.splice(iIndex, 1);
+        
+        // re-number
         aRows.forEach(function (r, i) {
           r.SNo = i + 1;
         });
@@ -312,24 +398,27 @@ sap.ui.define(
                 aRows[i].Shift +
                 "' in row " +
                 (i + 1) +
-                " is not valid."
+                " is not valid.",
             );
             return;
           }
 
           // Validate Resource exists
-          const bResourceExists = aResources.some(function (r) {
-            return r.Rsrc === aRows[i].Resource;
-          });
-          if (!bResourceExists) {
-            MessageBox.error(
-              "Resource '" +
-                aRows[i].Resource +
-                "' in row " +
-                (i + 1) +
-                " is not available."
-            );
-            return;
+          // Validate Resource ONLY for user-entered rows
+          if (aRows[i].__source === "UI") {
+            const bResourceExists = aResources.some(function (r) {
+              return r.Processor=== aRows[i].Resource;
+            });
+            if (!bResourceExists) {
+              MessageBox.error(
+                "Resource '" +
+                  aRows[i].Resource +
+                  "' in row " +
+                  (i + 1) +
+                  " is not available.",
+              );
+              return;
+            }
           }
 
           // Validate Queue exists
@@ -342,7 +431,7 @@ sap.ui.define(
                 aRows[i].Queue +
                 "' in row " +
                 (i + 1) +
-                " is not available."
+                " is not available.",
             );
             return;
           }
@@ -351,7 +440,7 @@ sap.ui.define(
             MessageBox.error(
               "Utilization Rate in row " +
                 (i + 1) +
-                " must be between 0 and 100."
+                " must be between 0 and 100.",
             );
             return;
           }
@@ -371,7 +460,7 @@ sap.ui.define(
                   (i + 1) +
                   " and Row " +
                   (j + 1) +
-                  " have the same combination."
+                  " have the same combination.",
               );
               return;
             }
@@ -385,9 +474,10 @@ sap.ui.define(
 
         const bHasDeletedRows = aDeletedRows.length > 0;
 
-        const bHasModifiedRows = aRows.some(function (row, index) {
+        const bHasModifiedRows = aRows.some(function (row) {
+          if (row.__state === "NEW") return false;
           const orig = aOriginal.find(function (o) {
-            return o.origIndex === index;
+            return o.__rowKey === row.__rowKey;
           });
           if (orig) {
             return (
@@ -415,7 +505,7 @@ sap.ui.define(
           const sPath = `/UtilizationRates(WhseNo='${row.WhseNo}',Shift='${
             row.Shift
           }',Resource='${row.Resource}',Queue='${encodeURIComponent(
-            row.Queue
+            row.Queue,
           )}')`;
           const oContext = oModel.bindContext(sPath).getBoundContext();
           const oDeletePromise = oContext.requestObject().then(function () {
@@ -440,10 +530,10 @@ sap.ui.define(
         });
 
         // ========== UPDATE existing records ==========
-        aRows.forEach(function (row, index) {
+        aRows.forEach(function (row) {
           if (row.__state === "UNCHANGED") {
             const orig = aOriginal.find(function (o) {
-              return o.origIndex === index; //
+              return o.__rowKey === row.__rowKey;
             });
             if (orig) {
               //  CHECK ALL FIELDS FOR CHANGES
@@ -470,7 +560,7 @@ sap.ui.define(
                     oContext.setProperty("Queue", row.Queue);
                     oContext.setProperty(
                       "UtilizationRate",
-                      Number(row.UtilizationRate)
+                      Number(row.UtilizationRate),
                     );
                     return oModel.submitBatch("$auto");
                   });
@@ -491,7 +581,7 @@ sap.ui.define(
             oVm.setProperty("/toggleeditbtn", true);
             oVm.setProperty("/canAddRow", false);
             oVm.setProperty("/deletedRows", []);
-            that._loadUtilizationRates(that._currentWarehouse);
+            that._loadWarehouseData(that._currentWarehouse);
           })
           .catch(function (e) {
             console.error("Save error:", e);
@@ -520,9 +610,7 @@ sap.ui.define(
             growingThreshold: 20,
             columns: [
               new sap.m.Column({ header: new sap.m.Text({ text: "Shift" }) }),
-              new sap.m.Column({
-                header: new sap.m.Text({ text: "Time Model" }),
-              }),
+              
             ],
             items: {
               path: "/",
@@ -530,7 +618,7 @@ sap.ui.define(
                 type: "Active",
                 cells: [
                   new sap.m.Text({ text: "{Timeint}" }),
-                  new sap.m.Text({ text: "{Timemodel}" }),
+                
                 ],
               }),
             },
@@ -599,10 +687,10 @@ sap.ui.define(
             new Filter({
               filters: [
                 new Filter("Timeint", FilterOperator.Contains, sValue),
-                new Filter("Timemodel", FilterOperator.Contains, sValue),
+              ,
               ],
               and: false,
-            })
+            }),
           );
         }
 
@@ -628,17 +716,17 @@ sap.ui.define(
             growingThreshold: 20,
             columns: [
               new sap.m.Column({
-                header: new sap.m.Text({ text: "Resource" }),
+               header: new sap.m.Text({ text: "Resource" }),
               }),
-              new sap.m.Column({ header: new sap.m.Text({ text: "Type" }) }),
+              new sap.m.Column({ header: new sap.m.Text({ text: "Name" }) }),
             ],
             items: {
               path: "/",
               template: new sap.m.ColumnListItem({
                 type: "Active",
                 cells: [
-                  new sap.m.Text({ text: "{Rsrc}" }),
-                  new sap.m.Text({ text: "{RsrcType}" }),
+                new sap.m.Text({ text: "{Processor}" }),
+                 new sap.m.Text({ text: "{FullName}" })
                 ],
               }),
             },
@@ -677,11 +765,11 @@ sap.ui.define(
         this._oResourceTable.removeSelections(true);
         this._oResourceTable.detachSelectionChange(
           this.onResourceRowSelect,
-          this
+          this,
         );
         this._oResourceTable.attachSelectionChange(
           this.onResourceRowSelect,
-          this
+          this,
         );
         this._oResourceDialog.open();
       },
@@ -694,9 +782,10 @@ sap.ui.define(
 
         const oBindingContext = oSelectedItem.getBindingContext();
         const oResourceData = oBindingContext.getObject();
-        const sResource = oResourceData.Rsrc;
+        const sResource = oResourceData.Processor;
 
         const oCtx = this._oResourceInput.getBindingContext("ViewModel");
+        
         const oVm = this.getView().getModel("ViewModel");
 
         oVm.setProperty(oCtx.getPath() + "/Resource", sResource);
@@ -712,11 +801,11 @@ sap.ui.define(
           aFilters.push(
             new Filter({
               filters: [
-                new Filter("Rsrc", FilterOperator.Contains, sValue),
-                new Filter("RsrcType", FilterOperator.Contains, sValue),
+              new Filter("Processor", FilterOperator.Contains, sValue),
+              new Filter("FullName", FilterOperator.Contains, sValue)
               ],
               and: false,
-            })
+            }),
           );
         }
 
@@ -824,12 +913,12 @@ sap.ui.define(
                 new Filter("Text", FilterOperator.Contains, sValue),
               ],
               and: false,
-            })
+            }),
           );
         }
 
         this._oQueueTable.getBinding("items").filter(aFilters);
       },
     });
-  }
+  },
 );

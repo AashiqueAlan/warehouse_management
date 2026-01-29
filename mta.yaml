@@ -75,6 +75,10 @@ modules:
       - maintainutilization.zip
       name: maintainutilization
       target-path: resources/
+    - artifacts:
+      - plannedworkloaddashboard.zip
+      name: plannedworkloaddashboard
+      target-path: resources/
 - name: warehousestandards
   type: html5
   path: app/warehouse_standards
@@ -88,6 +92,16 @@ modules:
 - name: maintainutilization
   type: html5
   path: app/maintain_utilization
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: plannedworkloaddashboard
+  type: html5
+  path: app/planned_workload_dashboard
   build-parameters:
     build-result: dist
     builder: custom
