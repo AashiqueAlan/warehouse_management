@@ -157,6 +157,118 @@
       </VBox>
 
       <!-- ================================================= -->
+      <!-- ==== DUAL TIME WINDOW INBOUND ONLY VIEW ====== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showDualTimeWindowsInboundOnly}" class="sapUiSmallMargin">
+        <layout:Splitter>
+          <layout:contentAreas>
+            <!-- INBOUND 24HR -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Inbound (24 hrs)">
+                <content>
+                  <table:TreeTable id="inbound24OnlyTreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData24', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Tasks"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Value"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                    </table:columns>
+                  </table:TreeTable>
+                </content>
+              </Panel>
+            </ScrollContainer>
+            <!-- INBOUND 48HR -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Inbound (48 hrs)">
+                <content>
+                  <table:TreeTable id="inbound48OnlyTreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData48', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Tasks"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Value"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                    </table:columns>
+                  </table:TreeTable>
+                </content>
+              </Panel>
+            </ScrollContainer>
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+
+      <!-- ================================================= -->
+      <!-- ==== DUAL TIME WINDOW OUTBOUND ONLY VIEW ===== -->
+      <!-- ================================================= -->
+      <VBox visible="{viewModel>/showDualTimeWindowsOutboundOnly}" class="sapUiSmallMargin">
+        <layout:Splitter>
+          <layout:contentAreas>
+            <!-- OUTBOUND 24HR -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Outbound (24 hrs)">
+                <content>
+                  <table:TreeTable id="outbound24OnlyTreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/outboundData24', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Tasks"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Value"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                    </table:columns>
+                  </table:TreeTable>
+                </content>
+              </Panel>
+            </ScrollContainer>
+            <!-- OUTBOUND 48HR -->
+            <ScrollContainer height="auto" width="auto" vertical="true">
+              <Panel headerText="Outbound (48 hrs)">
+                <content>
+                  <table:TreeTable id="outbound48OnlyTreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/outboundData48', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
+                    <table:columns>
+                      <table:Column width="auto">
+                        <Label text="Tasks"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                      <table:Column width="auto" hAlign="Center">
+                        <Label text="Value"/>
+                        <table:template>
+                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                        </table:template>
+                      </table:Column>
+                    </table:columns>
+                  </table:TreeTable>
+                </content>
+              </Panel>
+            </ScrollContainer>
+          </layout:contentAreas>
+        </layout:Splitter>
+      </VBox>
+
+      <!-- ================================================= -->
       <!-- ========== DUAL TIME WINDOW VIEW ============== -->
       <!-- ================================================= -->
       <VBox visible="{viewModel>/showDualTimeWindows}" class="sapUiSmallMargin">
@@ -165,7 +277,7 @@
           <layout:Splitter>
             <layout:contentAreas>
               <!-- 24HR OUTBOUND -->
-              <ScrollContainer height="auto" width="auto" vertical="true">
+              <ScrollContainer height="auto" width="auto" vertical="true" visible="{viewModel>/dualShowOutbound}">
                 <Panel headerText="Outbound (24 hrs)">
                   <content>
                     <table:TreeTable id="outbound24TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/outboundData24', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
@@ -188,7 +300,7 @@
                 </Panel>
               </ScrollContainer>
               <!-- 24HR INBOUND -->
-              <ScrollContainer height="auto" width="auto" vertical="true">
+              <ScrollContainer height="auto" width="auto" vertical="true"   visible="{viewModel>/dualShowInbound}">
                 <Panel headerText="Inbound (24 hrs)">
                   <content>
                     <table:TreeTable id="inbound24TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData24', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
@@ -219,7 +331,7 @@
           <layout:Splitter>
             <layout:contentAreas>
               <!-- 48HR OUTBOUND -->
-              <ScrollContainer height="auto" width="auto" vertical="true">
+              <ScrollContainer height="auto" width="auto" vertical="true"   visible="{viewModel>/dualShowOutbound}">
                 <Panel headerText="Outbound (48 hrs)">
                   <content>
                     <table:TreeTable id="outbound48TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/outboundData48', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
@@ -242,7 +354,7 @@
                 </Panel>
               </ScrollContainer>
               <!-- 48HR INBOUND -->
-              <ScrollContainer height="auto" width="auto" vertical="true">
+              <ScrollContainer height="auto" width="auto" vertical="true"   visible="{viewModel>/dualShowInbound}">
                 <Panel headerText="Inbound (48 hrs)">
                   <content>
                     <table:TreeTable id="inbound48TreeTable" rowsUpdated="onRowsUpdated" rows="{path: 'viewModel>/inboundData48', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
