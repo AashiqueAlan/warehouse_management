@@ -24,6 +24,10 @@ sap.ui.define([
         showInboundOnly: false,
         showOutboundOnly: false,
         showDualTimeWindows: false,
+        showDualTimeWindowsInboundOnly: false,
+        showDualTimeWindowsOutboundOnly: false,
+        dualShowOutbound: false,
+        dualShowInbound: false,
         selectedHours: {
           hours24: false,
           hours48: false
@@ -43,24 +47,19 @@ sap.ui.define([
       const vm = this.getView().getModel("viewModel");
 
       vm.setProperty("/showDualTimeWindows", false);
+      vm.setProperty("/showDualTimeWindowsInboundOnly", false);
+      vm.setProperty("/showDualTimeWindowsOutboundOnly", false);
       vm.setProperty("/showBothPanels", false);
       vm.setProperty("/showInboundOnly", false);
       vm.setProperty("/showOutboundOnly", false);
       vm.setProperty("/reportTypeLabel", oData.reportTypeLabel);
       vm.setProperty("/reportType", oData.reportType);
       vm.setProperty("/selectedHours", oData.selectedHours || { hours24: false, hours48: false });
-    
+
       // Check if both time windows are selected
       const isBothTimeWindows = oData.selectedHours && oData.selectedHours.hours24 && oData.selectedHours.hours48;
-      
-      if (isBothTimeWindows) {
-        // Show dual time window view
-        vm.setProperty("/showDualTimeWindows", true);
-        vm.setProperty("/showBothPanels", false);
-        vm.setProperty("/showInboundOnly", false);
-        vm.setProperty("/showOutboundOnly", false);
 
-  
+      if (isBothTimeWindows) {
         // Separate data by hours (DUAL VIEW ONLY)
         const inbound24Data = oData.inboundData
           ? oData.inboundData.filter(item => item.Hours === "24")
@@ -78,7 +77,7 @@ sap.ui.define([
           ? oData.outboundData.filter(item => item.Hours === "48")
           : [];
 
-        
+
         console.log("inbound24Data", inbound24Data);
         console.log("inbound48Data", inbound48Data);
         console.log("outbound24Data", outbound24Data);
@@ -90,12 +89,21 @@ sap.ui.define([
         vm.setProperty("/outboundData24", this._transformOutboundTreeData(outbound24Data));
         vm.setProperty("/outboundData48", this._transformOutboundTreeData(outbound48Data));
 
-        // Set reportType specific flags for dual time window
-        vm.setProperty("/dualShowOutbound", oData.reportType === "OUT" || oData.reportType === "BOTH");
-        vm.setProperty("/dualShowInbound", oData.reportType === "IN" || oData.reportType === "BOTH");
+        // Determine which view to show based on report type
+        if (oData.reportType === "IN") {
+          // Inbound only with dual time windows - side by side layout
+          vm.setProperty("/showDualTimeWindowsInboundOnly", true);
+        } else if (oData.reportType === "OUT") {
+          // Outbound only with dual time windows - side by side layout
+          vm.setProperty("/showDualTimeWindowsOutboundOnly", true);
+        } else if (oData.reportType === "BOTH") {
+          // Both inbound and outbound with dual time windows - original stacked layout
+          vm.setProperty("/showDualTimeWindows", true);
+          vm.setProperty("/dualShowOutbound", true);
+          vm.setProperty("/dualShowInbound", true);
+        }
       } else {
-        // Single time window view 
-        vm.setProperty("/showDualTimeWindows", false);
+        // Single time window view
         vm.setProperty("/showBothPanels", oData.reportType === "BOTH");
         vm.setProperty("/showInboundOnly", oData.reportType === "IN");
         vm.setProperty("/showOutboundOnly", oData.reportType === "OUT");

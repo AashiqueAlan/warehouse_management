@@ -1,8 +1,4 @@
 const cds = require("@sap/cds");
-//  Mock data
-// const MOCK_EWM = process.env.MOCK_EWM === "true";
-
-
 
 module.exports = cds.service.impl(async function () {
   const extSrv = await cds.connect.to("ZEWM_WHS_LM_SRV");
@@ -20,345 +16,345 @@ module.exports = cds.service.impl(async function () {
     ShiftProcessors
   } = this.entities;
 
-  //Mock need to remove when deploy
-  const MOCK_BACKEND_RESPONSE = {
-    NavWhseQueueInbound: [
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "001",
-        "Queue": "LIVEL",
-        "QueueDescription": "LIVE LOADS",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "002",
-        "Queue": "FTLD",
-        "QueueDescription": "LOADED TRAILERS",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "003",
-        "Queue": "SHUTL",
-        "QueueDescription": "SHUTTLE",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "004",
-        "Queue": "RACK",
-        "QueueDescription": "RACK PUTAWAY",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "005",
-        "Queue": "FLOR",
-        "QueueDescription": "FLOOR",
-        "Target": "300.00000000000000",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "      300-",
-        "VolumeAdded": "      300-",
-        "Need": "300.000000",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "006",
-        "Queue": "HOTL",
-        "QueueDescription": "IDENTIFIED HOT LOADS",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
+  // Mock need to remove when deploy
+  // const MOCK_BACKEND_RESPONSE = {
+  //   NavWhseQueueInbound: [
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "001",
+  //       "Queue": "LIVEL",
+  //       "QueueDescription": "LIVE LOADS",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "002",
+  //       "Queue": "FTLD",
+  //       "QueueDescription": "LOADED TRAILERS",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "003",
+  //       "Queue": "SHUTL",
+  //       "QueueDescription": "SHUTTLE",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "004",
+  //       "Queue": "RACK",
+  //       "QueueDescription": "RACK PUTAWAY",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "005",
+  //       "Queue": "FLOR",
+  //       "QueueDescription": "FLOOR",
+  //       "Target": "300.00000000000000",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "      300-",
+  //       "VolumeAdded": "      300-",
+  //       "Need": "300.000000",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "006",
+  //       "Queue": "HOTL",
+  //       "QueueDescription": "IDENTIFIED HOT LOADS",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
 
-    ],
+  //   ],
 
-    NavWhseQueueOutbound: [
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "001",
-        "Queue": "WAVEDC",
-        "QueueDescription": "WAVED TIME",
-        "Target": "12:33:06",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "12:33:06",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "002",
-        "Queue": "WAVEDD",
-        "QueueDescription": "WAVED TO DATE",
-        "Target": "2026-01-29",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "2026-01-29",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "005",
-        "Queue": "LIVEL",
-        "QueueDescription": "LIVE LOADS",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "006",
-        "Queue": "DROP",
-        "QueueDescription": "PRELOADS (DROPS)",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "007",
-        "Queue": "CARRL",
-        "QueueDescription": "LIVE MISSES",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "008",
-        "Queue": "CARRD",
-        "QueueDescription": "DROP MISSES",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "009",
-        "Queue": "REPL",
-        "QueueDescription": "REPLENS",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "010",
-        "Queue": "CASE",
-        "QueueDescription": "CASE PICKS REMAINING",
-        "Target": "400.00000000000000",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "      400-",
-        "VolumeAdded": "      400-",
-        "Need": "400.000000",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "011",
-        "Queue": "FLOR",
-        "QueueDescription": "FLOOR PICKS REMAINING",
-        "Target": "300.00000000000000",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "      300-",
-        "VolumeAdded": "      300-",
-        "Need": "300.000000",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "012",
-        "Queue": "RACK",
-        "QueueDescription": "RACK REMAINING",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      },
-      {
-        "WarehouseNumber": "30J2",
-        "Hours": "0",
-        "SequenceNumber": "013",
-        "Queue": "DUPK",
-        "QueueDescription": "DUPK REMAINING",
-        "Target": "0",
-        "PlannedLaborCapacity": "                            0",
-        "AvailableWorkinQueue": "                            0",
-        "CurrentCompleted": "                            0",
-        "CompleVsPlan": "",
-        "Shift": "30J2_EVENING",
-        "ShiftSequence": "",
-        "Delta": "        0",
-        "VolumeAdded": "        0",
-        "Need": "0",
-        "Current": "        0",
-        "Difference": ""
-      }
-    ]
-  };
+  //   NavWhseQueueOutbound: [
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "001",
+  //       "Queue": "WAVEDC",
+  //       "QueueDescription": "WAVED TIME",
+  //       "Target": "12:33:06",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "12:33:06",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "002",
+  //       "Queue": "WAVEDD",
+  //       "QueueDescription": "WAVED TO DATE",
+  //       "Target": "2026-01-29",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "2026-01-29",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "005",
+  //       "Queue": "LIVEL",
+  //       "QueueDescription": "LIVE LOADS",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "006",
+  //       "Queue": "DROP",
+  //       "QueueDescription": "PRELOADS (DROPS)",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "007",
+  //       "Queue": "CARRL",
+  //       "QueueDescription": "LIVE MISSES",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "008",
+  //       "Queue": "CARRD",
+  //       "QueueDescription": "DROP MISSES",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "009",
+  //       "Queue": "REPL",
+  //       "QueueDescription": "REPLENS",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "010",
+  //       "Queue": "CASE",
+  //       "QueueDescription": "CASE PICKS REMAINING",
+  //       "Target": "400.00000000000000",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "      400-",
+  //       "VolumeAdded": "      400-",
+  //       "Need": "400.000000",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "011",
+  //       "Queue": "FLOR",
+  //       "QueueDescription": "FLOOR PICKS REMAINING",
+  //       "Target": "300.00000000000000",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "      300-",
+  //       "VolumeAdded": "      300-",
+  //       "Need": "300.000000",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "012",
+  //       "Queue": "RACK",
+  //       "QueueDescription": "RACK REMAINING",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     },
+  //     {
+  //       "WarehouseNumber": "30J2",
+  //       "Hours": "0",
+  //       "SequenceNumber": "013",
+  //       "Queue": "DUPK",
+  //       "QueueDescription": "DUPK REMAINING",
+  //       "Target": "0",
+  //       "PlannedLaborCapacity": "                            0",
+  //       "AvailableWorkinQueue": "                            0",
+  //       "CurrentCompleted": "                            0",
+  //       "CompleVsPlan": "",
+  //       "Shift": "30J2_EVENING",
+  //       "ShiftSequence": "",
+  //       "Delta": "        0",
+  //       "VolumeAdded": "        0",
+  //       "Need": "0",
+  //       "Current": "        0",
+  //       "Difference": ""
+  //     }
+  //   ]
+  // };
 
-  function cloneWithHours(rows, hours) {
-    return rows.map(r => ({
-      ...r,
-      Hours: hours
-    }));
-  }
+  // function cloneWithHours(rows, hours) {
+  //   return rows.map(r => ({
+  //     ...r,
+  //     Hours: hours
+  //   }));
+  // }
 
   // External entities → EWM
   this.on("READ", Warehouses, (req) => extSrv.run(req.query));
@@ -400,57 +396,57 @@ module.exports = cds.service.impl(async function () {
     // ======================================================
     // TEMP MOCK RESPONSE (UI development only)
     // ======================================================
-   if (process.env.MOCK_EWM === "true") {
-  console.warn("⚠️ MOCK_EWM enabled — returning mocked 24/48 ECC-like response");
+    // if (process.env.MOCK_EWM === "true") {
+    //   console.warn("⚠️ MOCK_EWM enabled — returning mocked 24/48 ECC-like response");
 
-  const inbound24 = cloneWithHours(
-    MOCK_BACKEND_RESPONSE.NavWhseQueueInbound,
-    "24"
-  );
-  const inbound48 = cloneWithHours(
-    MOCK_BACKEND_RESPONSE.NavWhseQueueInbound,
-    "48"
-  );
+    //   const inbound24 = cloneWithHours(
+    //     MOCK_BACKEND_RESPONSE.NavWhseQueueInbound,
+    //     "24"
+    //   );
+    //   const inbound48 = cloneWithHours(
+    //     MOCK_BACKEND_RESPONSE.NavWhseQueueInbound,
+    //     "48"
+    //   );
 
-  const outbound24 = cloneWithHours(
-    MOCK_BACKEND_RESPONSE.NavWhseQueueOutbound,
-    "24"
-  );
-  const outbound48 = cloneWithHours(
-    MOCK_BACKEND_RESPONSE.NavWhseQueueOutbound,
-    "48"
-  );
+    //   const outbound24 = cloneWithHours(
+    //     MOCK_BACKEND_RESPONSE.NavWhseQueueOutbound,
+    //     "24"
+    //   );
+    //   const outbound48 = cloneWithHours(
+    //     MOCK_BACKEND_RESPONSE.NavWhseQueueOutbound,
+    //     "48"
+    //   );
 
-  return {
-    WarehouseNumber,
+    //   return {
+    //     WarehouseNumber,
 
-    OnlyInbound: ReportType === "IN" ? "X" : "",
-    OnlyOutbound: ReportType === "OUT" ? "X" : "",
-    BothInbOut: ReportType === "BOTH" ? "X" : "",
+    //     OnlyInbound: ReportType === "IN" ? "X" : "",
+    //     OnlyOutbound: ReportType === "OUT" ? "X" : "",
+    //     BothInbOut: ReportType === "BOTH" ? "X" : "",
 
-    SummaryView: ViewType === "SUMMARY" ? "X" : "",
-    ShiftView: ViewType === "SHIFT" ? "X" : "",
-    LaborNeedsPlanView: ViewType === "LABOR" ? "X" : "",
+    //     SummaryView: ViewType === "SUMMARY" ? "X" : "",
+    //     ShiftView: ViewType === "SHIFT" ? "X" : "",
+    //     LaborNeedsPlanView: ViewType === "LABOR" ? "X" : "",
 
-    FortyEightHrs,
-    TwentyFourHrs,
+    //     FortyEightHrs,
+    //     TwentyFourHrs,
 
-    NavWhseQueueInbound:
-      ReportType === "OUT"
-        ? []
-        : [...inbound24, ...inbound48],
+    //     NavWhseQueueInbound:
+    //       ReportType === "OUT"
+    //         ? []
+    //         : [...inbound24, ...inbound48],
 
-    NavWhseQueueOutbound:
-      ReportType === "IN"
-        ? []
-        : [...outbound24, ...outbound48],
+    //     NavWhseQueueOutbound:
+    //       ReportType === "IN"
+    //         ? []
+    //         : [...outbound24, ...outbound48],
 
-    NavWhseQueue: [],
-    NavPlannedWDashb: [],
-    NavWhseUtlz: [],
-    NavWhseOpenDock: []
-  };
-}
+    //     NavWhseQueue: [],
+    //     NavPlannedWDashb: [],
+    //     NavWhseUtlz: [],
+    //     NavWhseOpenDock: []
+    //   };
+    // }
 
     // =========================================================================================================
     const queueList = Queues?.map((q) => q.Queue);
