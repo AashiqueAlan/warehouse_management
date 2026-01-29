@@ -5,7 +5,7 @@
     xmlns:f="sap.ui.layout.form"
     displayBlock="true"
 >
-    <Page title="Warehouse Standards">
+    <Page title="Warehouse Standards" showNavButton="true" navButtonPress="onNavBack">
         <headerContent>
             <Button
                 text="Add Row"

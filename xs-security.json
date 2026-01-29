@@ -1,21 +1,74 @@
 {
   "xsappname": "warehouse_management_package",
   "tenant-mode": "dedicated",
-  "description": "Security profile of called application",
+  "description": "Security configuration for Warehouse Standards, Maintain Utilization, and Planned Workload Dashboard",
+
   "scopes": [
     {
-      "name": "uaa.user",
-      "description": "UAA"
+      "name": "$XSAPPNAME.WarehouseStandards.Edit",
+      "description": "Create, update, and delete Warehouse Standards"
+    },
+    {
+      "name": "$XSAPPNAME.MaintainUtilization.Edit",
+      "description": "Create, update, and delete Utilization Rates for Resources"
+    },
+    {
+      "name": "$XSAPPNAME.PlannedWorkload.View",
+      "description": "View access to Planned Workload Dashboard"
     }
   ],
+
+  "attributes": [
+    {
+      "name": "WarehouseID",
+      "description": "Warehouse restriction. Use specific warehouse IDs or ALL",
+      "valueType": "s"
+    }
+  ],
+
   "role-templates": [
     {
-      "name": "Token_Exchange",
-      "description": "UAA",
+      "name": "WarehouseStandards_Edit",
+      "description": "Edit access to Warehouse Standards application",
       "scope-references": [
-        "uaa.user"
+        "$XSAPPNAME.WarehouseStandards.Edit"
+      ],
+      "attribute-references": [
+        {
+          "name": "WarehouseID"
+        }
+      ]
+    },
+    {
+      "name": "MaintainUtilization_Edit",
+      "description": "Edit access to Maintain Utilization Rates application",
+      "scope-references": [
+        "$XSAPPNAME.MaintainUtilization.Edit"
+      ],
+      "attribute-references": [
+        {
+          "name": "WarehouseID"
+        }
+      ]
+    },
+    {
+      "name": "PlannedWorkload_View",
+      "description": "View-only access to Planned Workload Dashboard",
+      "scope-references": [
+        "$XSAPPNAME.PlannedWorkload.View"
+      ],
+      "attribute-references": [
+        {
+          "name": "WarehouseID"
+        }
       ]
     }
-   
-  ]
+  ],
+
+  "oauth2-configuration": {
+    "credential-types": [
+      "binding-secret",
+      "x509"
+    ]
+  }
 }

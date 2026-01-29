@@ -1,0 +1,177 @@
+{
+	"_version": "1.76.0",
+	"sap.app": {
+		"id": "plannedworkloaddashboard",
+		"type": "application",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [
+				""
+			]
+		},
+		"applicationVersion": {
+			"version": "0.0.1"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"resources": "resources.json",
+		"sourceTemplate": {
+			"id": "@sap/generator-fiori:basic",
+			"version": "1.20.0",
+			"toolsId": "380e8d00-9be5-4285-844f-291783a30735"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/odata/v4/catalog/",
+				"type": "OData",
+				"settings": {
+					"annotations": [],
+					"odataVersion": "4.0"
+				}
+			}
+		},
+		"crossNavigation": {
+			"inbounds": {
+				"planned_workload-create": {
+					"semanticObject": "planned_workload",
+					"action": "create",
+					"title": "{{planned_workload-create.flpTitle}}",
+					"subTitle": "{{planned_workload-create.flpSubtitle}}",
+					"signature": {
+						"parameters": {},
+						"additionalParameters": "allowed"
+					}
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": false,
+		"dependencies": {
+			"minUI5Version": "1.143.2",
+			"libs": {
+				"sap.m": {},
+				"sap.ui.core": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "plannedworkloaddashboard.i18n.i18n",
+					"supportedLocales": [
+						""
+					]
+				}
+			},
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"operationMode": "Server",
+					"autoExpandSelect": true,
+					"earlyRequests": true
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"controlAggregation": "pages",
+				"controlId": "app",
+				"transition": "slide",
+				"type": "View",
+				"viewType": "XML",
+				"path": "plannedworkloaddashboard.view",
+				"async": true,
+				"viewPath": "plannedworkloaddashboard.view"
+			},
+			"routes": [
+				{
+					"name": "RouteMain",
+					"pattern": ":?query:",
+					"target": [
+						"TargetMain"
+					]
+				},
+				{
+					"name": "shiftDetails",
+					"pattern": "shiftDetails/:?data:",
+					"target": [
+						"TargetShiftDetails"
+					]
+				},
+				{
+					"name": "summaryView",
+					"pattern": "summaryView/:?data:",
+					"target": [
+						"TargetSummary"
+					]
+				},
+				{
+					"name": "laborView",
+					"pattern": "laborView/:?data:",
+					"target": [
+						"TargetLabor"
+					]
+				}
+			],
+			"targets": {
+				"TargetMain": {
+					"id": "Main",
+					"name": "Main"
+				},
+				"TargetShiftDetails": {
+					"id": "ShiftDetails",
+					"name": "ShiftDetails"
+				},
+				"TargetSummary": {
+					"id": "Summary",
+					"name": "Summary"
+				},
+				"TargetLabor": {
+					"id": "Labor",
+					"name": "Labor"
+				}
+			}
+		},
+		"rootView": {
+			"viewName": "plannedworkloaddashboard.view.App",
+			"type": "XML",
+			"id": "App",
+			"async": true
+		},
+		"flexBundle": false
+	},
+	"sap.cloud": {
+		"public": true,
+		"service": "WMP_Approuter"
+	}
+}

@@ -2,99 +2,60 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:c="sap.ui.core"
-    displayBlock="true"
->
-    <Page title="Warehouse Selection">
-        <content>
-            <FlexBox
-                alignItems="Center"
-                direction="Column"
-                height="100%"
-                width="100%"
-            >
-                <VBox height="10rem" />
+    xmlns:f="sap.f" displayBlock="true">
+    <f:DynamicPage id="dynamicPage">
+        <f:title>
+            <f:DynamicPageTitle>
+                <f:heading>
+                    <VariantManagement id="variantManagement" select=".onVariantSelect" save=".onVariantSave" manage=".onVariantManage" showSetAsDefault="true" showExecuteOnSelection="false" popoverTitle="Warehouse Variants">
+                        <items>
+                            <VariantItem key="standard" title="Standard" author="System" favorite="true" visible="true" executeOnSelect="false" rename="false" changeable="false" remove="false" />
+                        </items>
+                    </VariantManagement>
+                </f:heading>
+            </f:DynamicPageTitle>
+        </f:title>
 
-                <Panel
-                    class="warehouseSelectionContainer sapUiResponsiveMargin"
-                    width="auto"
-                >
-                    <!-- HEADER -->
-                    <VBox
-                        class="headerSection"
-                        alignItems="Center"
-                    >
-                        <c:Icon
-                            src="sap-icon://shipping-status"
-                            size="3rem"
-                            class="sapUiSmallMarginBottom"
-                        />
+        <f:content>
+            <Page showHeader="false">
+                <content>
+                    <FlexBox alignItems="Center" direction="Column" height="100%" width="100%">
+                        <VBox height="10rem" />
 
-                        <Title
-                            text="Please select your warehouse to continue"
-                            level="H2"
-                            textAlign="Center"
-                        />
-                    </VBox>
+                        <Panel class="warehouseSelectionContainer sapUiResponsiveMargin" width="auto">
+                            <!-- HEADER -->
+                            <VBox class="headerSection" alignItems="Center">
+                                <c:Icon src="sap-icon://shipping-status" size="3rem" class="sapUiSmallMarginBottom" />
 
-                    <!-- INPUT -->
-                    <VBox class="inputSection sapUiMediumMarginTop">
-                        <Label
-                            text="Warehouse Number"
-                            design="Bold"
-                            required="true"
-                        />
+                                <Title text="Please select your warehouse to continue" level="H2" textAlign="Center" />
+                            </VBox>
 
-                        <!-- ODATA V4 BINDING -->
-                        <ComboBox
-                            id="warehouseInput"
-                            width="100%"
-                            placeholder="Select warehouse"
-                            showSecondaryValues="true"
-                            items="{
-                                      path: '/Warehouses',
-                                      sorter: { path: 'Lgnum' }
-                                    }"
-                            selectedKey="{view>/selectedWarehouse}"
-                            selectionChange=".onWarehouseSelected"
-                            showClearIcon="true"
-                        >
-                            <c:ListItem
-                                key="{Lgnum}"
-                                text="{Lgnum}"   
-                                additionalText="{Lnumt}"
-                            />
-                        </ComboBox>
+                            <!-- INPUT -->
+                            <VBox class="inputSection sapUiMediumMarginTop">
+                                <Label text="Warehouse Number" design="Bold" required="true" />
 
-                        <HBox class="sapUiTinyMarginTop">
-                            <c:Icon
-                                src="sap-icon://hint"
-                                size="0.875rem"
-                                class="sapUiTinyMarginEnd"
-                            />
-                            <Text
-                                class="sapUiTinyText"
-                                text="{view>/warehouseCount} warehouses available"
-                            />
-                        </HBox>
-                    </VBox>
+                                <!-- ODATA V4 BINDING -->
+                                <ComboBox id="warehouseInput" width="100%" placeholder="Select warehouse" showSecondaryValues="true" items="{
+                                              path: '/Warehouses',
+                                              sorter: { path: 'Lgnum' }
+                                            }" selectedKey="{view>/selectedWarehouse}" selectionChange=".onWarehouseSelected" showClearIcon="true">
+                                    <c:ListItem key="{Lgnum}" text="{Lgnum}" additionalText="{Lnumt}" />
+                                </ComboBox>
 
-                    <!-- ACTION -->
-                    <VBox
-                        class="sapUiMediumMarginTop"
-                        alignItems="Center"
-                    >
-                        <Button
-                            text="Continue"
-                            type="Emphasized"
-                            press=".onContinue"
-                            icon="sap-icon://navigation-right-arrow"
-                            iconFirst="false"
-                            enabled="{= !!${view>/selectedWarehouse}}"
-                            class="continueButton"
-                        />
-                    </VBox>
-                </Panel>
-            </FlexBox>
-        </content>
-    </Page>
+                                <HBox class="sapUiTinyMarginTop">
+                                    <c:Icon src="sap-icon://hint" size="0.875rem" class="sapUiTinyMarginEnd" />
+                                    <Text class="sapUiTinyText" text="{view>/warehouseCount} warehouses available" />
+                                </HBox>
+                            </VBox>
+
+                            <!-- ACTION -->
+                            <VBox class="sapUiMediumMarginTop" alignItems="Center">
+                                <Button text="Continue" type="Emphasized" press=".onContinue" icon="sap-icon://navigation-right-arrow" iconFirst="false" enabled="{= !!${view>/selectedWarehouse}}" class="continueButton" />
+                            </VBox>
+                        </Panel>
+                    </FlexBox>
+                </content>
+            </Page>
+        </f:content>
+    </f:DynamicPage>
 </mvc:View>

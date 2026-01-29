@@ -24,7 +24,8 @@
     "undeploy": "cf undeploy warehouse_management_package --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
-    "watch-maintain_utilization": "cds watch --open maintainutilization/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-maintain_utilization": "cds watch --open maintainutilization/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-planned_workload_dashboard": "cds watch --open plannedworkloaddashboard/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "private": true,
   "cds": {
@@ -38,9 +39,19 @@
       "ZEWM_WHS_LM_SRV": {
         "kind": "odata-v2",
         "model": "srv/external/ZEWM_WHS_LM_SRV",
+        "csrf": true,
+        "csrfInBatch": true,
         "credentials": {
           "destination": "EWM-PrincipalPropagation",
           "path": "/sap/opu/odata/sap/ZEWM_WHS_LM_SRV"
+        }
+      },
+      "[development]": {
+        "db": {
+          "kind": "sqlite",                                             
+          "credentials": {
+            "url": "db.sqlite"
+          }
         }
       }
     }

@@ -1,32 +1,16 @@
-<mvc:View
-  controllerName="maintainutilization.controller.Main"
+<mvc:View controllerName="maintainutilization.controller.Main"
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
-  xmlns:core="sap.ui.core"
-  displayBlock="true"
->
-  <Page title="Maintain Utilization Rate">
+  xmlns:core="sap.ui.core" displayBlock="true">
+  <Page title="Maintain Utilization Rate" showNavButton="true" navButtonPress="onNavBack">
 
     <!-- ===== HEADER BUTTONS ===== -->
     <headerContent>
-      <Button
-        text="Add Row"
-        icon="sap-icon://add"
-        press="onAddRow"
-        enabled="{ViewModel>/canAddRow}" />
+      <Button text="Add Row" icon="sap-icon://add" press="onAddRow" enabled="{= ${ViewModel>/editMode}}" />
 
-      <Button
-        text="Edit"
-        icon="sap-icon://edit"
-        press="onEditButtonPress"
-        enabled="{ViewModel>/toggleeditbtn}" />
+      <Button text="Edit" icon="sap-icon://edit" press="onEditButtonPress" enabled="{ViewModel>/toggleeditbtn}" />
 
-      <Button
-        text="Save"
-        icon="sap-icon://save"
-        type="Success"
-        press="onSaveButtonPress"
-        enabled="{ViewModel>/editMode}" />
+      <Button text="Save" icon="sap-icon://save" type="Success" press="onSaveButtonPress" enabled="{ViewModel>/editMode}" />
     </headerContent>
 
     <!-- ===== CONTENT ===== -->
@@ -41,13 +25,7 @@
       </VBox>
 
       <!-- Utilization Table -->
-      <Table
-        id="utilizationTable"
-        items="{ViewModel>/rows}"
-        mode="{= ${ViewModel>/editMode} ? 'Delete' : 'None'}"
-        delete="onDeleteRow"
-        growing="true"
-        growingThreshold="20">
+      <Table id="utilizationTable" items="{ViewModel>/rows}" mode="{= ${ViewModel>/editMode} ? 'Delete' : 'None'}" delete="onDeleteRow" growing="true" growingThreshold="20">
 
         <!-- ===== COLUMNS ===== -->
         <columns>
@@ -81,35 +59,19 @@
               <Text text="{ViewModel>SNo}" />
 
               <!-- Shift -->
-              <Input
-                value="{ViewModel>Shift}"
-                editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW'}"
-                showValueHelp="true"
-                valueHelpRequest="onShiftValueHelp"
-                placeholder="Select Shift" />
+              <Input value="{ViewModel>Shift}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW' &amp;&amp; ${ViewModel>__source} !== 'BACKEND'}" showValueHelp="true" valueHelpRequest="onShiftValueHelp" placeholder="Select Shift" />
 
               <!-- Resource -->
-              <Input
-                value="{ViewModel>Resource}"
-                editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW'}"
-                showValueHelp="true"
-                valueHelpRequest="onResourceValueHelp"
-                placeholder="Select Resource" />
+              <Input value="{ViewModel>Resource}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW' &amp;&amp; ${ViewModel>__source} !== 'BACKEND'}" showValueHelp="true" valueHelpRequest="onResourceValueHelp" placeholder="Select Resource" />
 
               <!-- Queue -->
-              <Input
-                value="{ViewModel>Queue}"
-                editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW'}"
-                showValueHelp="true"
-                valueHelpRequest="onQueueValueHelp"
-                placeholder="Select Queue" />
+              <Input value="{ViewModel>Queue}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} !== 'READONLY'}" showValueHelp="true" valueHelpRequest="onQueueValueHelp" placeholder="Select Queue" />
 
               <!-- Utilization Rate -->
-              <Input
-                value="{ViewModel>UtilizationRate}"
-                editable="{ViewModel>/editMode}"
-                type="Number"
-                placeholder="0 – 100" />
+              <Input value="{ViewModel>UtilizationRate}" 
+       editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} !== 'READONLY'}" 
+       type="Number" 
+       placeholder="0 - 100" />
 
             </cells>
           </ColumnListItem>
