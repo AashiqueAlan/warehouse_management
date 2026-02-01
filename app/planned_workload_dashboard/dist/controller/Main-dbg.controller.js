@@ -92,30 +92,31 @@ sap.ui.define(
         const wavedateStr = vm.getProperty("/waveDate");
         const viewType = idx === 0 ? "SUMMARY" : idx === 1 ? "SHIFT" : "LABOR";
         vm.setProperty("/viewType", viewType);
+        this._applyViewTypeRules(viewType);
 
-        if (viewType === "SHIFT") {
-          // FORCE hours state BEFORE hiding
-          vm.setProperty("/hours48", true);
-          vm.setProperty("/hours24", false);
+        // if (viewType === "SHIFT") {
+        //   // FORCE hours state BEFORE hiding
+        //   vm.setProperty("/hours48", true);
+        //   vm.setProperty("/hours24", false);
 
-          // Hide CheckBox
-          vm.setProperty("/show24Hours", false);
-          vm.setProperty("/hoursIndex", 0);
+        //   // Hide CheckBox
+        //   vm.setProperty("/show24Hours", false);
+        //   vm.setProperty("/hoursIndex", 0);
 
-          // Force +48h date logic
-          const oDate = new Date(wavedateStr);
-          oDate.setDate(oDate.getDate() + 2);
+        //   // Force +48h date logic
+        //   const oDate = new Date(wavedateStr);
+        //   oDate.setDate(oDate.getDate() + 2);
 
-          const formattedDate = oDate.toISOString().slice(0, 10);
+        //   const formattedDate = oDate.toISOString().slice(0, 10);
 
-          // Mapping the date to json model
-          // vm.setProperty("/waveDate", formattedDate);
-          vm.setProperty("/pickDate", formattedDate);
+        //   // Mapping the date to json model
+        //   // vm.setProperty("/waveDate", formattedDate);
+        //   vm.setProperty("/pickDate", formattedDate);
 
-        } else {
-          vm.setProperty("/show24Hours", true);
-        }
-        vm.setProperty("/showHoursSelection", viewType !== "SHIFT");
+        // } else {
+        //   vm.setProperty("/show24Hours", true);
+        // }
+        // vm.setProperty("/showHoursSelection", viewType !== "SHIFT");
       },
 
       onWaveDateDatePickerChange() {
@@ -130,6 +131,13 @@ sap.ui.define(
         const PickDate = waveDate.toISOString().slice(0, 10)
         ovm.setProperty("/pickDate", PickDate);
 
+      },
+      onWaveTimeTimePickerChange() {
+        const ovm = this.getView().getModel("viewModel");
+        const waveTime = ovm.getProperty("/waveTime");
+
+
+        ovm.setProperty("/pickTime", waveTime)
       },
 
       onHoursCheckboxSelect(oEvent) {
@@ -232,6 +240,7 @@ sap.ui.define(
               vm.setProperty("/reportType_OUT", oState.reportType_OUT || false);
               vm.setProperty("/reportType", oState.reportType || "BOTH");
               vm.setProperty("/viewType", oState.viewType || "SHIFT");
+              this._applyViewTypeRules(vm.getProperty("/viewType"));
 
               const oViewTypeGroup = this.byId("viewTypeGroup");
               if (oViewTypeGroup) {
@@ -289,6 +298,27 @@ sap.ui.define(
           JSON.stringify(aVariants),
         );
       },
+      _applyViewTypeRules(viewType) {
+        const vm = this.getView().getModel("viewModel");
+
+        if (viewType === "SHIFT") {
+          vm.setProperty("/hours48", true);
+          vm.setProperty("/hours24", false);
+          vm.setProperty("/show24Hours", false);
+          vm.setProperty("/showHoursSelection", false);
+           const waveDateStr = vm.getProperty("/waveDate");
+          // FORCE +48h date
+          if (waveDateStr) {
+            const d = new Date(waveDateStr);
+            d.setDate(d.getDate() + 2);
+            vm.setProperty("/pickDate", d.toISOString().slice(0, 10));
+          }
+        } else {
+          vm.setProperty("/show24Hours", true);
+          vm.setProperty("/showHoursSelection", true);
+        }
+      },
+
 
       _checkCurrentVariant: function () {
         const sSelectedKey = this._oVM.getSelectedKey();

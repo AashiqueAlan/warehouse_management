@@ -43,14 +43,14 @@
 
                             <!-- Wave Date & Time -->
                             <HBox class="sapUiTinyMarginBottom" alignItems="Center">
-                                <Label text="Wave:" class="sapUiTinyMarginEnd" width="200px" />
+                                <Label text="Waved Date:" class="sapUiTinyMarginEnd" width="200px" />
                                 <DatePicker id="waveDatePicker" value="{viewModel>/waveDate}" change="onWaveDateDatePickerChange" valueFormat="yyyy-MM-dd" displayFormat="MM/dd/yyyy" placeholder="Select Date" width="150px" class="sapUiTinyMarginEnd sapUiSizeCompact" />
-                                <TimePicker id="waveTimePicker" value="{viewModel>/waveTime}"  valueFormat="HH:mm:ss" displayFormat="HH:mm:ss" placeholder="Time" width="120px" class="sapUiSizeCompact" />
+                                <TimePicker id="waveTimePicker" value="{viewModel>/waveTime}" change="onWaveTimeTimePickerChange" valueFormat="HH:mm:ss" displayFormat="HH:mm:ss" placeholder="Time" width="120px" class="sapUiSizeCompact" />
                             </HBox>
 
                             <!-- Pick Complete Date & Time -->
                             <HBox class="sapUiTinyMarginBottom" alignItems="Center">
-                                <Label text="Pick Complete:" class="sapUiTinyMarginEnd" width="200px" />
+                                <Label text="Pick Complete Date:" class="sapUiTinyMarginEnd" width="200px" />
                                 <DatePicker id="PickDatePicker" value="{viewModel>/pickDate}"  valueFormat="yyyy-MM-dd" displayFormat="MM/dd/yyyy" placeholder="Select Date" width="150px" class="sapUiTinyMarginEnd sapUiSizeCompact" />
                                 <TimePicker id="PickTimePicker" value="{viewModel>/pickTime}" valueFormat="HH:mm:ss" displayFormat="HH:mm:ss" placeholder="Time" width="120px" class="sapUiSizeCompact" />
                             </HBox>
@@ -70,7 +70,7 @@
 
                             <HBox class="sapUiTinyMarginBottom" alignItems="Center">
                                 <Label text="Report View:" class="sapUiTinyMarginEnd" width="200px" />
-                                <RadioButtonGroup id="viewTypeGroup" selectedIndex="0" select="onViewTypeSelect" columns="3">
+                                <RadioButtonGroup id="viewTypeGroup"  selectedIndex="{= ${viewModel>/viewType} === 'SUMMARY' ? 0 : ${viewModel>/viewType} === 'SHIFT'   ? 1 : 2 }" select="onViewTypeSelect" columns="3">
                                     <RadioButton text="Summary View" />
                                     <RadioButton text="Shift View" />
                                     <RadioButton text="Labor Needs VS Plan View" />

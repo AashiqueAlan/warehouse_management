@@ -11,3 +11,9 @@
 .childRowNormal .sapMObjStatusText {
   font-weight: normal !important;
 }
+
+
+.purpleStatus .sapMObjStatusText {
+  color: #800080; /* purple */
+  font-weight: bold;
+}

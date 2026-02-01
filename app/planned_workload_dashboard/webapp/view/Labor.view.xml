@@ -28,7 +28,7 @@
           <table:Table rows="{viewModel>/outboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData}.length }">
             <table:columns>
               <table:Column>
-                <Label text="Activity"/>
+                <Label text="Activity" />
                 <table:template>
                   <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
                 </table:template>
@@ -36,19 +36,19 @@
               <table:Column hAlign="Center">
                 <Label text="Need"/>
                 <table:template>
-                  <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                  <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                 </table:template>
               </table:Column>
               <table:Column hAlign="Center">
                 <Label text="Current"/>
                 <table:template>
-                  <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                  <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                 </table:template>
               </table:Column>
               <table:Column hAlign="Center">
                 <Label text="Difference"/>
                 <table:template>
-                  <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                  <ObjectStatus text="{viewModel>Difference}" state="Error" class="boldStatus"/>
                 </table:template>
               </table:Column>
             </table:columns>
@@ -72,19 +72,19 @@
               <table:Column hAlign="Center">
                 <Label text="Need"/>
                 <table:template>
-                  <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                  <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                 </table:template>
               </table:Column>
               <table:Column hAlign="Center">
                 <Label text="Current"/>
                 <table:template>
-                  <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                  <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                 </table:template>
               </table:Column>
               <table:Column hAlign="Center">
                 <Label text="Difference"/>
                 <table:template>
-                  <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                  <ObjectStatus text="{viewModel>Difference}" state="Error" class="boldStatus"/>
                 </table:template>
               </table:Column>
             </table:columns>
@@ -115,21 +115,21 @@
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -152,21 +152,21 @@
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -193,25 +193,25 @@
                   <table:Column>
                     <Label text="Activity"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                      <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -224,25 +224,25 @@
                   <table:Column>
                     <Label text="Activity"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                      <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -262,25 +262,25 @@
                   <table:Column>
                     <Label text="Activity"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                      <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                      <ObjectStatus text="{viewModel>Difference}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -293,25 +293,25 @@
                   <table:Column>
                     <Label text="Activity"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>QueueDescription}"/>
+                      <ObjectStatus text="{viewModel>QueueDescription}" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="Error"/>
+                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -345,21 +345,21 @@
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -382,21 +382,21 @@
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -431,21 +431,21 @@
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -468,21 +468,21 @@
                   <table:Column hAlign="Center">
                     <Label text="Need"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information"/>
+                      <ObjectStatus text="{path: 'viewModel>Need', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Current}" state="Success"/>
+                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Difference}" state="{= ${viewModel>Difference} &lt; 0 ? 'Error' : 'Success' }"/>
+                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>

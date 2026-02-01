@@ -83,17 +83,11 @@ sap.ui.define([
 
       } else {
         // SINGLE TIME WINDOW (24 OR 48)
+        // Backend already knows the selected hour
+        // Labor Need backend sends Hours = "0" so we should not filter based on hours
 
-        const selectedHour = oData.selectedHours?.hours24 ? "24" : "48";
-
-        const inboundSingle =
-          (oData.inboundData || []).filter(i => i.Hours === selectedHour);
-
-        const outboundSingle =
-          (oData.outboundData || []).filter(i => i.Hours === selectedHour);
-
-        vm.setProperty("/inboundData", inboundSingle);
-        vm.setProperty("/outboundData", outboundSingle);
+        vm.setProperty("/inboundData", oData.inboundData || []);
+        vm.setProperty("/outboundData", oData.outboundData || []);
 
         vm.setProperty("/showInboundOnly", oData.reportType === "IN");
         vm.setProperty("/showOutboundOnly", oData.reportType === "OUT");
@@ -105,7 +99,7 @@ sap.ui.define([
     },
     formatTarget: function (v) {
       if (v === null || v === undefined || v === "") {
-        return "";
+        return "0";
       }
 
       const s = String(v).trim();

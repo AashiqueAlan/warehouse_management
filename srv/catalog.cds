@@ -83,6 +83,8 @@ service CatalogService {
 
   type WhseQueueResult {
     WarehouseNumber      : String(4);
+    Hours                : String(2);
+    SequenceNumber       : String(3);
     Queue                : String(10);
     QueueDescription     : String(60);
 
@@ -92,19 +94,15 @@ service CatalogService {
     CurrentCompleted     : String(30);
     CompleVsPlan         : String(6);
 
+
     Shift                : String(40);
     ShiftSequence        : String(40);
 
-    LiveLoadComplete     : String(10);
-    DropLoadComplete     : String(10);
-    LoadsAddedNextday    : String(10);
-
-    CarrierMissLive      : String(10);
-    CarrierMissDrop      : String(10);
-    WhsMissLive          : String(10);
-    WhsMissDrop          : String(10);
-
-    DirectHeadScheduled  : String(10);
+    Delta                : String(10);
+    VolumeAdded          : String(10);
+    Need                 : String(10);
+    Current              : String(10);
+    Difference           : String(10);
   }
 
 

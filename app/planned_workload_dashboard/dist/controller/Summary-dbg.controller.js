@@ -128,27 +128,28 @@ sap.ui.define([
       const scheduledChildren = [];
       const missedChildren = [];
 
-      const val = i => this._parseValue(i.CurrentCompleted);
+      // const val = i => this._parseValue(i.AvailableWorkinQueue);
 
       sorted.forEach(item => {
         const seq = Number(item.SequenceNumber);
+        const displayValue = this._formatDisplayValue(item.AvailableWorkinQueue);
 
-        // 5 & 6 → Scheduled Loads
-        if (seq === 5 || seq === 6) {
+        // 7 & 8 → Scheduled Loads
+        if (seq === 7 || seq === 8) {
           scheduledChildren.push({
             QueueDescription: item.QueueDescription,
-            CurrentCompleted: val(item).toString(),
+            AvailableWorkinQueue: displayValue,
             isParent: false,
             children: []
           });
           return;
         }
 
-        // 7 & 8 → Missed Loads
-        if (seq === 7 || seq === 8) {
+        // 9 & 10 → Missed Loads
+        if (seq === 9 || seq === 10) {
           missedChildren.push({
             QueueDescription: item.QueueDescription,
-            CurrentCompleted: val(item).toString(),
+            AvailableWorkinQueue: displayValue,
             isParent: false,
             children: []
           });
@@ -157,32 +158,34 @@ sap.ui.define([
 
         // Everything else → flat, ordered
         result.push({
+          SequenceNumber: seq,
           QueueDescription: item.QueueDescription,
-          CurrentCompleted: val(item).toString(),
+          AvailableWorkinQueue: displayValue,
           isParent: false,
           children: []
         });
       });
 
-      // Insert Scheduled Loads AFTER sequence 4
-      if (scheduledChildren.length) {
+      // find where seq > 6 starts
+      const insertIndex = result.findIndex(r => r.SequenceNumber > 6);
+      const baseIndex = insertIndex === -1 ? result.length : insertIndex;
 
-        result.splice(4, 0, {
+      if (scheduledChildren.length) {
+        result.splice(baseIndex, 0, {
           QueueDescription: "Scheduled Loads",
-          CurrentCompleted: scheduledChildren
-            .reduce((s, c) => s + Number(c.CurrentCompleted), 0)
+          AvailableWorkinQueue: scheduledChildren
+            .reduce((s, c) => s + Number(c.AvailableWorkinQueue), 0)
             .toString(),
           isParent: true,
           children: scheduledChildren
         });
       }
 
-      // Insert Missed Loads AFTER Scheduled Loads
       if (missedChildren.length) {
-        result.splice(5, 0, {
+        result.splice(baseIndex + 1, 0, {
           QueueDescription: "Missed Loads",
-          CurrentCompleted: missedChildren
-            .reduce((s, c) => s + Number(c.CurrentCompleted), 0)
+          AvailableWorkinQueue: missedChildren
+            .reduce((s, c) => s + Number(c.AvailableWorkinQueue), 0)
             .toString(),
           isParent: true,
           children: missedChildren
@@ -190,6 +193,7 @@ sap.ui.define([
       }
 
       return result;
+
     },
     _transformInboundTreeData(aData) {
       // STEP 1: SORT
@@ -201,7 +205,7 @@ sap.ui.define([
       const inboundTruckChildren = [];
       const putawayChildren = [];
 
-      const val = i => this._parseValue(i.CurrentCompleted);
+      const val = i => this._parseValue(i.AvailableWorkinQueue);
 
       sorted.forEach(item => {
         const seq = Number(item.SequenceNumber);
@@ -210,7 +214,7 @@ sap.ui.define([
         if (seq === 1 || seq === 2 || seq === 3) {
           inboundTruckChildren.push({
             QueueDescription: item.QueueDescription,
-            CurrentCompleted: val(item).toString(),
+            AvailableWorkinQueue: val(item).toString(),
             isParent: false,
             children: []
           });
@@ -221,40 +225,42 @@ sap.ui.define([
         if (seq === 4 || seq === 5) {
           putawayChildren.push({
             QueueDescription: item.QueueDescription,
-            CurrentCompleted: val(item).toString(),
+            AvailableWorkinQueue: val(item).toString(),
             isParent: false,
             children: []
           });
           return;
         }
 
-        // Everything else → flat (ex: Identified Hot Loads)
+        // Everything else flow normally
         result.push({
           QueueDescription: item.QueueDescription,
-          CurrentCompleted: val(item).toString(),
+          AvailableWorkinQueue: val(item).toString(),
           isParent: true,
           children: []
         });
       });
 
-      // Insert Total Inbound Trucks at top
+      // find where seq > 0 starts (top insertion)
+      let insertIndex = 0;
+
       if (inboundTruckChildren.length) {
-        result.splice(0, 0, {
+        result.splice(insertIndex, 0, {
           QueueDescription: "Total Inbound Trucks",
-          CurrentCompleted: inboundTruckChildren
-            .reduce((s, c) => s + Number(c.CurrentCompleted), 0)
+          AvailableWorkinQueue: inboundTruckChildren
+            .reduce((s, c) => s + Number(c.AvailableWorkinQueue), 0)
             .toString(),
           isParent: true,
           children: inboundTruckChildren
         });
+        insertIndex++;
       }
 
-      // Insert Putaway Pallets after trucks
       if (putawayChildren.length) {
-        result.splice(1, 0, {
+        result.splice(insertIndex, 0, {
           QueueDescription: "Putaway Pallets",
-          CurrentCompleted: putawayChildren
-            .reduce((s, c) => s + Number(c.CurrentCompleted), 0)
+          AvailableWorkinQueue: putawayChildren
+            .reduce((s, c) => s + Number(c.AvailableWorkinQueue), 0)
             .toString(),
           isParent: true,
           children: putawayChildren
@@ -262,6 +268,7 @@ sap.ui.define([
       }
 
       return result;
+
     },
 
     _parseValue(value) {
@@ -270,13 +277,47 @@ sap.ui.define([
       return isNaN(parsed) ? 0 : parsed;
     },
 
+    _formatDisplayValue(value) {
+
+      // OLD behavior: empty → "0"
+      if (value === "" || value === null || value === undefined) {
+        return "0";
+      }
+
+      const s = String(value).trim();
+
+      // Date YYYY-MM-DD → show as-is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+        return s;
+      }
+
+      // Time HH:MM:SS → show as-is
+      if (/^\d{2}:\d{2}:\d{2}$/.test(s)) {
+        return s;
+      }
+
+      // Decimal number → truncate
+      if (/^-?\d+\.\d+$/.test(s)) {
+        return Math.trunc(Number(s)).toString();
+      }
+
+      // Integer → show as-is
+      if (/^-?\d+$/.test(s)) {
+        return s;
+      }
+
+      // Fallback → exactly what backend sent
+      return s;
+    },
+
+
     onRowsUpdated: function (oEvent) {
       const oTreeTable = oEvent.getSource();
       const aRows = oTreeTable.getRows();
-      const oModel = oTreeTable.getModel("viewModel"); // FIXED
+      const oModel = oTreeTable.getModel("viewModel");
 
       aRows.forEach(function (oRow) {
-        const oContext = oRow.getBindingContext("viewModel"); // FIXED
+        const oContext = oRow.getBindingContext("viewModel");
         if (!oContext) {
           return;
         }

@@ -123,9 +123,12 @@ sap.ui.define([
         }
 
         map[shiftName].queues.push(o);
+       
       });
 
-      //  Sort rows INSIDE each shift by SequenceNumber
+
+
+      // based on the sequence number the each shift will be sorted
       Object.values(map).forEach(group => {
         group.queues.sort((a, b) => {
           const sa = parseInt(a.SequenceNumber, 10) || 0;
@@ -134,17 +137,16 @@ sap.ui.define([
         });
       });
 
+      console.log("map", Object.values(map));
       return Object.values(map);
+
     },
 
 
-    // _num(v) {
-    //   const n = parseInt(String(v || "").trim(), 10);
-    //   return isNaN(n) ? 0 : n;
-    // },
+
     formatTarget: function (v) {
       if (v === null || v === undefined || v === "") {
-        return "";
+        return "0";
       }
 
       const s = String(v).trim();

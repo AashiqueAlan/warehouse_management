@@ -1,3 +1,8 @@
+
+.env
+*.env
+default-env.json
+
 # CAP warehouse_management_package
 _out
 *.db
@@ -17,6 +22,7 @@ target/
 *_mta_build_tmp
 *.mtar
 mta_archives/
+
 
 # Other
 .DS_Store

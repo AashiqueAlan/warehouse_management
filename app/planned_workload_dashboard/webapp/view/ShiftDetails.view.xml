@@ -48,38 +48,38 @@
               <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
 
                 <table:columns>
-                  <table:Column width="auto">
+                  <table:Column width="17rem">
                     <Label text="Tasks"/>
                     <table:template>
-                      <ObjectStatus text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }" class="boldStatus"/>
+                      <ObjectStatus   text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Target"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus" />
+                      <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="Warning" class="boldStatus" />
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Planned Capacity"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                      <ObjectStatus text="{path: 'viewModel>PlannedLaborCapacity', formatter: '.formatTarget'}" state="Information" class="boldStatus" />
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Available Work"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Error" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                      <ObjectStatus text="{path: 'viewModel>AvailableWorkinQueue', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Current Completed"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>CurrentCompleted', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -93,14 +93,14 @@
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Delta"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Delta}" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                      <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}" class="boldStatus purpleStatus" />
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Volume Added"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>VolumeAdded}" state="Error" class="boldStatus" visible="{= ${viewModel>RowType} === 'DATA' }"/>
+                      <ObjectStatus text="{path: 'viewModel>VolumeAdded', formatter: '.formatTarget'}" state="Error" class="boldStatus" />
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -136,24 +136,24 @@
               <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
 
                 <table:columns>
-                  <table:Column width="auto">
+                  <table:Column width="17rem">
                     <Label text="Tasks"/>
                     <table:template>
-                      <ObjectStatus text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }" class="boldStatus"/>
+                      <ObjectStatus   text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Target"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="Warning" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Planned Capacity"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>PlannedLaborCapacity', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -167,7 +167,7 @@
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Current Completed"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>CurrentCompleted', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -181,7 +181,7 @@
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Delta"/>
                     <table:template>
-                      <ObjectStatus text="{viewModel>Delta}" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}" class="boldStatus purpleStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -237,10 +237,10 @@
 
 
                           <table:columns>
-                            <table:Column width="auto">
+                            <table:Column width="13rem">
                               <Label text="Tasks"/>
                               <table:template>
-                                <ObjectStatus text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }" class="boldStatus"/>
+                                <ObjectStatus   text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -248,7 +248,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Target"/>
                               <table:template>
-                                <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="Warning" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -256,7 +256,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Planned Capacity"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>PlannedLaborCapacity', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -264,7 +264,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Available Work"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Error" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>AvailableWorkinQueue', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -272,7 +272,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Current Completed"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>CurrentCompleted', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -287,14 +287,14 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Delta"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>Delta}" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}" class="boldStatus purpleStatus"/>
                               </table:template>
                             </table:Column>
 
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Volume Added"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>VolumeAdded}" state="Error" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>VolumeAdded', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                               </table:template>
                             </table:Column>
                           </table:columns>
@@ -334,10 +334,10 @@
 
 
                           <table:columns>
-                            <table:Column width="auto">
+                            <table:Column  width="13rem">
                               <Label text="Tasks"/>
                               <table:template>
-                                <ObjectStatus  text="{= ${viewModel>RowType} === 'CONTEXT' ? ${viewModel>Label} : (${viewModel>QueueDescription} || ${viewModel>Queue}) }"  class="boldStatus"/>
+                                <ObjectStatus    text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }"  class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -345,7 +345,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Target"/>
                               <table:template>
-                                <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="None" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>Target', formatter: '.formatTarget'}" state="Warning" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -353,7 +353,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Planned Capacity"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>PlannedLaborCapacity}" state="Information" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>PlannedLaborCapacity', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -369,7 +369,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Current Completed"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>CurrentCompleted}" state="Success" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>CurrentCompleted', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -384,7 +384,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Delta"/>
                               <table:template>
-                                <ObjectStatus text="{viewModel>Delta}" class="boldStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}"  class="boldStatus purpleStatus"/>
                               </table:template>
                             </table:Column>
 

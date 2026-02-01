@@ -39,7 +39,7 @@
                 <table:Column width="auto" hAlign="Center">
                   <Label text="Value"/>
                   <table:template>
-                    <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information"  class="boldStatus"/>
+                    <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information"  class="boldStatus"/>
                   </table:template>
                 </table:Column>
 
@@ -72,7 +72,7 @@
                 <table:Column width="auto" hAlign="Center">
                   <Label text="Value"/>
                   <table:template>
-                    <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information"  class="boldStatus"/>
+                    <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information"  class="boldStatus"/>
                   </table:template>
                 </table:Column>
 
@@ -111,7 +111,7 @@
                       <table:Column width="auto" hAlign="Center">
                         <Label text="Value"/>
                         <table:template>
-                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                         </table:template>
                       </table:Column>
 
@@ -140,7 +140,7 @@
                       <table:Column width="auto" hAlign="Center">
                         <Label text="Value"/>
                         <table:template>
-                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                         </table:template>
                       </table:Column>
 
@@ -177,8 +177,10 @@
                       <table:Column width="auto" hAlign="Center">
                         <Label text="Value"/>
                         <table:template>
-                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                         </table:template>
+
+
                       </table:Column>
                     </table:columns>
                   </table:TreeTable>
@@ -200,7 +202,7 @@
                       <table:Column width="auto" hAlign="Center">
                         <Label text="Value"/>
                         <table:template>
-                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                         </table:template>
                       </table:Column>
                     </table:columns>
@@ -233,7 +235,7 @@
                       <table:Column width="auto" hAlign="Center">
                         <Label text="Value"/>
                         <table:template>
-                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                         </table:template>
                       </table:Column>
                     </table:columns>
@@ -256,7 +258,7 @@
                       <table:Column width="auto" hAlign="Center">
                         <Label text="Value"/>
                         <table:template>
-                          <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                          <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                         </table:template>
                       </table:Column>
                     </table:columns>
@@ -291,7 +293,7 @@
                         <table:Column width="auto" hAlign="Center">
                           <Label text="Value"/>
                           <table:template>
-                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                            <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                           </table:template>
                         </table:Column>
                       </table:columns>
@@ -314,7 +316,7 @@
                         <table:Column width="auto" hAlign="Center">
                           <Label text="Value"/>
                           <table:template>
-                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                            <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                           </table:template>
                         </table:Column>
                       </table:columns>
@@ -345,7 +347,7 @@
                         <table:Column width="auto" hAlign="Center">
                           <Label text="Value"/>
                           <table:template>
-                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                            <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                           </table:template>
                         </table:Column>
                       </table:columns>
@@ -368,7 +370,7 @@
                         <table:Column width="auto" hAlign="Center">
                           <Label text="Value"/>
                           <table:template>
-                            <ObjectStatus text="{viewModel>CurrentCompleted}" state="Information" class="boldStatus"/>
+                            <ObjectStatus text="{viewModel>AvailableWorkinQueue}" state="Information" class="boldStatus"/>
                           </table:template>
                         </table:Column>
                       </table:columns>
