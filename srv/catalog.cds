@@ -2,6 +2,7 @@ using {ZEWM_WHS_LM_SRV as ext} from './external/ZEWM_WHS_LM_SRV';
 using wh from '../db/schema';
 
 @path: 'catalog'
+@requires: 'authenticated-user'
 service CatalogService {
 
   @readonly
@@ -181,4 +182,14 @@ service CatalogService {
                           PickCompleteDate: String(10),
                           PickCompleteTime: String(10),
                           Queues: array of QueueInput) returns PlannedWDashbPayload;
+
+  action canEditWarehouse(WhseNo: String(4))           returns Boolean;
+
+  type UserContext {
+    id                : String;
+    roles             : String ;
+    allowedWarehouses : array of String;
+  }
+  
+  action getUserContext() returns UserContext;
 }

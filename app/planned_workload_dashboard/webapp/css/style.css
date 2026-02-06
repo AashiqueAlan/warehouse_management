@@ -4,6 +4,7 @@
     /* or bold */
 }
 
+
 .parentRowBold .sapMObjStatusText {
   font-weight: 700 !important;
 }
@@ -17,3 +18,4 @@
   color: #800080; /* purple */
   font-weight: bold;
 }
+

@@ -8,7 +8,7 @@ entity WarehouseStandards : managed {
     key Queue  : String(10);
         Value  : Integer;
         Uom    : String(3);
-}
+} 
 
 entity UtilizationRates : managed {
     key WhseNo          : String(4);
@@ -19,9 +19,9 @@ entity UtilizationRates : managed {
 }
 
 entity opendock_dtl_appointment {
-    key WhseNo       : String;
-    key SHIPMENT     : Integer;
-    key DELIVERY     : Integer;
+    key WhseNo       : String ;
+    key SHIPMENT     : Integer64;
+    key DELIVERY     : Integer64;
         Appt_status  : String;
         Appt_start   : Date;
         appt_stime   : Time;

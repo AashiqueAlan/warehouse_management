@@ -3,9 +3,14 @@ sap.ui.define(
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
+    "sap/m/MessageBox",
     "sap/m/VariantItem",
   ],
-  (Controller, JSONModel, MessageToast, VariantItem) => {
+  (Controller,
+	JSONModel,
+	MessageToast,
+	MessageBox,
+	VariantItem) => {
     "use strict";
 
     return Controller.extend("maintainutilization.controller.Default", {
@@ -15,6 +20,10 @@ sap.ui.define(
           warehouses: [],
           selectedWarehouse: null,
           warehouseCount: 0,
+          userId: "",
+          roles: [],
+          allowedWarehouses: [],
+          isGlobalAdmin: false,
         });
 
         this.getView().setModel(oViewModel, "view");
@@ -24,6 +33,7 @@ sap.ui.define(
         this._oVM = this.byId("variantManagement");
         this._loadSavedVariants();
         this._applyDefaultVariant();
+        this._loadUserContext();
       },
       _loadSavedVariants: function () {
         const sStoredvariants = localStorage.getItem(
@@ -333,9 +343,20 @@ sap.ui.define(
       },
 
       onContinue: function () {
+        const oVm = this.getView().getModel("view");
         const sLgnum = this.getView()
           .getModel("view")
           .getProperty("/selectedWarehouse");
+
+        const aAllowed = oVm.getProperty("/allowedWarehouses") || [];
+        const bGlobal = aAllowed.includes("ALL");
+        console.log("aAllowed", aAllowed);
+        console.log("bGlobal", bGlobal);
+        if (!bGlobal && !aAllowed.includes(sLgnum)) {
+          MessageBox.error(`You are not authorized to access warehouse ${sLgnum}`);
+
+          return;
+        }
 
         if (!sLgnum) {
           MessageToast.show("Please select a warehouse");
@@ -346,6 +367,37 @@ sap.ui.define(
 
         this.getOwnerComponent().getRouter().navTo("Main", { lgnum: sLgnum });
       },
+
+      _loadUserContext: function () {
+        const oModel = this.getOwnerComponent().getModel();
+        const oVm = this.getView().getModel("view");
+        return new Promise((resolve, reject) => {
+
+          const oActionBinding = oModel.bindContext("/getUserContext(...)");
+
+          oActionBinding
+            .execute()
+            .then(() => {
+              const oResult = oActionBinding.getBoundContext().getObject();
+
+              console.log("User Context", oResult);
+
+              oVm.setProperty("/userId", oResult.id);
+              oVm.setProperty("/roles", oResult.roles || []);
+              oVm.setProperty("/allowedWarehouses", oResult.allowedWarehouses || []);
+              oVm.setProperty(
+                "/isGlobalAdmin",
+                (oResult.allowedWarehouses || []).includes("ALL")
+              );
+
+              return oResult;
+            })
+            .catch((oError) => {
+              reject(oError);
+            });
+        });
+
+      }
     });
   },
 );

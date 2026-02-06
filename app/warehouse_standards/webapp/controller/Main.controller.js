@@ -29,7 +29,7 @@ sap.ui.define(
           uoms: [],
           editMode: false,
           toggleeditbtn: true,
-          canAddRow: true, // Always allow add row
+          
           warehouseDisplay: "",
         });
 
@@ -61,6 +61,9 @@ sap.ui.define(
         this._loadQueues(sWhseNo);
         this._loadUoms();
         this._loadWarehouseStandards(sWhseNo);
+        
+        // this._checkEditAuthorization(sWhseNo);
+
       },
 
       /* ================= LOADERS ================= */
@@ -257,12 +260,12 @@ sap.ui.define(
           if (!bQueueExists) {
             MessageBox.error(
               "Queue '" +
-                aRows[i].Queue +
-                "' in row " +
-                (i + 1) +
-                " is not available for warehouse " +
-                that._currentWarehouse +
-                ". Please select a valid queue from the list."
+              aRows[i].Queue +
+              "' in row " +
+              (i + 1) +
+              " is not available for warehouse " +
+              that._currentWarehouse +
+              ". Please select a valid queue from the list."
             );
             return;
           }
@@ -275,10 +278,10 @@ sap.ui.define(
           if (!bUomExists) {
             MessageBox.error(
               "UOM '" +
-                aRows[i].Uom +
-                "' in row " +
-                (i + 1) +
-                " is not valid. Please select a valid UOM from the list."
+              aRows[i].Uom +
+              "' in row " +
+              (i + 1) +
+              " is not valid. Please select a valid UOM from the list."
             );
             return;
           }
@@ -390,8 +393,16 @@ sap.ui.define(
             that._loadWarehouseStandards(that._currentWarehouse);
           })
           .catch(function (e) {
-            console.error("Save error:", e);
-            MessageBox.error("Save failed: " + (e.message || "Unknown error"));
+            let sMsg = "You are not authorized to perform this action";
+
+            if (e && e.responseText) {
+              try {
+                const oErr = JSON.parse(e.responseText);
+                sMsg = oErr.error?.message?.value || sMsg;
+              } catch (ignore) { }
+            }
+
+            MessageBox.error(sMsg);
           });
       },
       /* ================= VALUE HELPS ================= */
@@ -622,6 +633,11 @@ sap.ui.define(
 
         this._oUomTable.getBinding("items").filter(aFilters);
       },
+
+      
+
+      
+
     });
   }
 );

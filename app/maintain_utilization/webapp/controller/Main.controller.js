@@ -162,11 +162,24 @@ sap.ui.define(
           ])
           .requestContexts(0, Infinity)
           .then(function (aCtx) {
-            const aResources = aCtx.map(function (c) {
-              return c.getObject();
+            const aAllResources = aCtx.map(c => c.getObject());
+
+            //  Deduplicate by Processor (ignore Shift)
+            const mUnique = {};
+            aAllResources.forEach(r => {
+              if (!mUnique[r.Processor]) {
+                mUnique[r.Processor] = {
+                  Processor: r.Processor,
+                  FullName: r.FullName || "",
+                  WarehouseNumber: r.WarehouseNumber
+                };
+              }
             });
-            oVm.setProperty("/resources", aResources);
-            console.log("Resources loaded:", aResources.length);
+
+            const aUniqueResources = Object.values(mUnique);
+
+            oVm.setProperty("/resources", aUniqueResources);
+            console.log("Unique Resources loaded:", aUniqueResources);
           })
           .catch(function (err) {
             console.error("Failed to load resources:", err);
@@ -174,6 +187,7 @@ sap.ui.define(
             oVm.setProperty("/resources", []);
           });
       },
+
       _loadWarehouseData: function (sWhseNo) {
         const oModel = this.getOwnerComponent().getModel();
         const oVm = this.getView().getModel("ViewModel");
@@ -354,7 +368,7 @@ sap.ui.define(
         }
 
         aRows.splice(iIndex, 1);
-        
+
         // re-number
         aRows.forEach(function (r, i) {
           r.SNo = i + 1;
@@ -395,10 +409,10 @@ sap.ui.define(
           if (!bShiftExists) {
             MessageBox.error(
               "Shift '" +
-                aRows[i].Shift +
-                "' in row " +
-                (i + 1) +
-                " is not valid.",
+              aRows[i].Shift +
+              "' in row " +
+              (i + 1) +
+              " is not valid.",
             );
             return;
           }
@@ -407,15 +421,15 @@ sap.ui.define(
           // Validate Resource ONLY for user-entered rows
           if (aRows[i].__source === "UI") {
             const bResourceExists = aResources.some(function (r) {
-              return r.Processor=== aRows[i].Resource;
+              return r.Processor === aRows[i].Resource;
             });
             if (!bResourceExists) {
               MessageBox.error(
                 "Resource '" +
-                  aRows[i].Resource +
-                  "' in row " +
-                  (i + 1) +
-                  " is not available.",
+                aRows[i].Resource +
+                "' in row " +
+                (i + 1) +
+                " is not available.",
               );
               return;
             }
@@ -428,10 +442,10 @@ sap.ui.define(
           if (!bQueueExists) {
             MessageBox.error(
               "Queue '" +
-                aRows[i].Queue +
-                "' in row " +
-                (i + 1) +
-                " is not available.",
+              aRows[i].Queue +
+              "' in row " +
+              (i + 1) +
+              " is not available.",
             );
             return;
           }
@@ -439,8 +453,8 @@ sap.ui.define(
           if (aRows[i].UtilizationRate < 0 || aRows[i].UtilizationRate > 100) {
             MessageBox.error(
               "Utilization Rate in row " +
-                (i + 1) +
-                " must be between 0 and 100.",
+              (i + 1) +
+              " must be between 0 and 100.",
             );
             return;
           }
@@ -457,10 +471,10 @@ sap.ui.define(
             ) {
               MessageBox.error(
                 "Duplicate entry found.\n\nRow " +
-                  (i + 1) +
-                  " and Row " +
-                  (j + 1) +
-                  " have the same combination.",
+                (i + 1) +
+                " and Row " +
+                (j + 1) +
+                " have the same combination.",
               );
               return;
             }
@@ -502,11 +516,10 @@ sap.ui.define(
 
         // ========== DELETE records ==========
         aDeletedRows.forEach(function (row) {
-          const sPath = `/UtilizationRates(WhseNo='${row.WhseNo}',Shift='${
-            row.Shift
-          }',Resource='${row.Resource}',Queue='${encodeURIComponent(
-            row.Queue,
-          )}')`;
+          const sPath = `/UtilizationRates(WhseNo='${row.WhseNo}',Shift='${row.Shift
+            }',Resource='${row.Resource}',Queue='${encodeURIComponent(
+              row.Queue,
+            )}')`;
           const oContext = oModel.bindContext(sPath).getBoundContext();
           const oDeletePromise = oContext.requestObject().then(function () {
             return oContext.delete("$auto");
@@ -545,11 +558,9 @@ sap.ui.define(
 
               if (bIsModified) {
                 //  UPDATE ALL CHANGED FIELDS
-                const sPath = `/UtilizationRates(WhseNo='${
-                  row.WhseNo
-                }',Shift='${orig.origShift}',Resource='${
-                  orig.origResource
-                }',Queue='${encodeURIComponent(orig.origQueue)}')`;
+                const sPath = `/UtilizationRates(WhseNo='${row.WhseNo
+                  }',Shift='${orig.origShift}',Resource='${orig.origResource
+                  }',Queue='${encodeURIComponent(orig.origQueue)}')`;
                 const oContext = oModel.bindContext(sPath).getBoundContext();
                 const oUpdatePromise = oContext
                   .requestObject()
@@ -610,7 +621,7 @@ sap.ui.define(
             growingThreshold: 20,
             columns: [
               new sap.m.Column({ header: new sap.m.Text({ text: "Shift" }) }),
-              
+
             ],
             items: {
               path: "/",
@@ -618,7 +629,7 @@ sap.ui.define(
                 type: "Active",
                 cells: [
                   new sap.m.Text({ text: "{Timeint}" }),
-                
+
                 ],
               }),
             },
@@ -687,7 +698,7 @@ sap.ui.define(
             new Filter({
               filters: [
                 new Filter("Timeint", FilterOperator.Contains, sValue),
-              ,
+                ,
               ],
               and: false,
             }),
@@ -716,7 +727,7 @@ sap.ui.define(
             growingThreshold: 20,
             columns: [
               new sap.m.Column({
-               header: new sap.m.Text({ text: "Resource" }),
+                header: new sap.m.Text({ text: "Resource" }),
               }),
               new sap.m.Column({ header: new sap.m.Text({ text: "Name" }) }),
             ],
@@ -725,8 +736,8 @@ sap.ui.define(
               template: new sap.m.ColumnListItem({
                 type: "Active",
                 cells: [
-                new sap.m.Text({ text: "{Processor}" }),
-                 new sap.m.Text({ text: "{FullName}" })
+                  new sap.m.Text({ text: "{Processor}" }),
+                  new sap.m.Text({ text: "{FullName}" })
                 ],
               }),
             },
@@ -785,7 +796,7 @@ sap.ui.define(
         const sResource = oResourceData.Processor;
 
         const oCtx = this._oResourceInput.getBindingContext("ViewModel");
-        
+
         const oVm = this.getView().getModel("ViewModel");
 
         oVm.setProperty(oCtx.getPath() + "/Resource", sResource);
@@ -801,8 +812,8 @@ sap.ui.define(
           aFilters.push(
             new Filter({
               filters: [
-              new Filter("Processor", FilterOperator.Contains, sValue),
-              new Filter("FullName", FilterOperator.Contains, sValue)
+                new Filter("Processor", FilterOperator.Contains, sValue),
+                new Filter("FullName", FilterOperator.Contains, sValue)
               ],
               and: false,
             }),

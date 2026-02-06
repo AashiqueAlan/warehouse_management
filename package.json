@@ -47,8 +47,49 @@
         }
       },
       "[development]": {
+        "auth": {
+          "kind": "mocked",
+          "users": {
+            "user30J2": {
+              "password": "pwd",
+              "roles": [
+                "WarehouseStandards.Edit",
+                "MaintainUtilization.Edit"
+              ],
+              "attr": {
+                "WarehouseID": [
+                  "30J2" , "30J2"
+                ]
+              }
+            },
+            "user3085": {
+              "password": "pwd",
+              "roles": [
+                "WarehouseStandards.Edit",
+                "MaintainUtilization.Edit"
+              ],
+              "attr": {
+                "WarehouseID": [
+                  "3085","3085"
+                ]
+              }
+            },
+            "userGBL": {
+              "password": "pwd",
+              "roles": [
+                "WarehouseStandards.Edit",
+                "MaintainUtilization.Edit"
+              ],
+              "attr": {
+                "WarehouseID": [
+                  "ALL","ALL"
+                ]
+              }
+            }
+          }
+        },
         "db": {
-          "kind": "sqlite",                                             
+          "kind": "sqlite",
           "credentials": {
             "url": "db.sqlite"
           }

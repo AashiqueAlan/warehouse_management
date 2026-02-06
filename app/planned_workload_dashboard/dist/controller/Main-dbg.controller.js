@@ -41,6 +41,10 @@ sap.ui.define(
           shiftData: [],
           isLoading: false,
           directionLabel: "Queue",
+          userId: "",
+          roles: [],
+          allowedWarehouses: [],
+          isGlobalAdmin: false,
 
         });
         this.getView().setModel(oViewModel, "viewModel");
@@ -50,6 +54,7 @@ sap.ui.define(
         this._applyDefaultVariant();
 
         this.getCurrentDateTime();
+        this._loadUserContext();
       },
 
       getCurrentDateTime() {
@@ -306,7 +311,7 @@ sap.ui.define(
           vm.setProperty("/hours24", false);
           vm.setProperty("/show24Hours", false);
           vm.setProperty("/showHoursSelection", false);
-           const waveDateStr = vm.getProperty("/waveDate");
+          const waveDateStr = vm.getProperty("/waveDate");
           // FORCE +48h date
           if (waveDateStr) {
             const d = new Date(waveDateStr);
@@ -509,8 +514,19 @@ sap.ui.define(
 
       onGenerateReport() {
         const vm = this.getView().getModel("viewModel");
+         const whse = vm.getProperty("/selectedWarehouse");
+        //Authorization
+        const aAllowed = vm.getProperty("/allowedWarehouses" ) || [];
+        const bGlobal = aAllowed.includes("ALL");
+        console.log("aAllowed", aAllowed);
+        console.log("bGlobal", bGlobal);
 
-        const whse = vm.getProperty("/selectedWarehouse");
+        if (!bGlobal && !aAllowed.includes(whse)) {
+          MessageBox.error(`You are not authorized to access warehouse ${whse}`);
+
+          return;
+        }
+       
         const selectedQueues = vm.getProperty("/selectedQueues");
         const reportType = vm.getProperty("/reportType"); // IN / OUT / BOTH
         const viewType = vm.getProperty("/viewType");     // SUMMARY / SHIFT / LABOR
@@ -558,7 +574,7 @@ sap.ui.define(
         vm.setProperty("/isLoading", true);
         vm.setProperty("/showResults", false);
 
-        //  SINGLE PAYLOAD — FLAG BASED (NO HOURS)
+        //  SINGLE PAYLOAD — FLAG BASED 
         const oPayload = {
           WarehouseNumber: whse,
           ReportType: reportType,
@@ -777,6 +793,36 @@ sap.ui.define(
         }
         return `${sDate || ""} ${sTime || ""}`.trim();
       },
+      _loadUserContext: function () {
+        const oModel = this.getOwnerComponent().getModel();
+        const oVm = this.getView().getModel("viewModel");
+        return new Promise((resolve, reject) => {
+
+          const oActionBinding = oModel.bindContext("/getUserContext(...)");
+
+          oActionBinding
+            .execute()
+            .then(() => {
+              const oResult = oActionBinding.getBoundContext().getObject();
+
+              console.log("User Context", oResult);
+
+              oVm.setProperty("/userId", oResult.id);
+              oVm.setProperty("/roles", oResult.roles || []);
+              oVm.setProperty("/allowedWarehouses", oResult.allowedWarehouses || []);
+              oVm.setProperty(
+                "/isGlobalAdmin",
+                (oResult.allowedWarehouses || []).includes("ALL")
+              );
+
+              return oResult;
+            })
+            .catch((oError) => {
+              reject(oError);
+            });
+        });
+
+      }
     });
   },
 );
