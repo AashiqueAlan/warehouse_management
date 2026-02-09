@@ -23,7 +23,7 @@ sap.ui.define(
           rows: [],
           originalRows: [],
           deletedRows: [],
-          deletedContexts: {},
+          // deletedContexts: {},
           queues: [],
           shifts: [],
           resources: [],
@@ -72,7 +72,7 @@ sap.ui.define(
             Queue: "",
             UtilizationRate: 0,
             __state: "NEW",
-            __source: "BACKEND",
+            __source: "FALLBACK"
           }));
 
           oVm.setProperty("/rows", aRows);
@@ -89,105 +89,17 @@ sap.ui.define(
 
         const oVm = this.getView().getModel("ViewModel");
         oVm.setProperty("/warehouseDisplay", sWhseNo);
+        oVm.setProperty("/queues", []);
+        oVm.setProperty("/shifts", []);
+        oVm.setProperty("/resources", []);
         oVm.setProperty("/rows", []);
         oVm.setProperty("/originalRows", []);
         oVm.setProperty("/deletedRows", []);
-        oVm.setProperty("/deletedContexts", {});
-
-        // Load data
-        this._loadQueues(sWhseNo);
-        this._loadShifts(sWhseNo);
-        this._loadResources(sWhseNo);
-        // this._loadUtilizationRates(sWhseNo);
-
-        // this._loadInitialProcessors(sWhseNo);
+        // oVm.setProperty("/deletedContexts", {});
         this._loadWarehouseData(sWhseNo);
       },
 
       /* ================= LOADERS ================= */
-
-      _loadQueues: function (sWhseNo) {
-        const oModel = this.getOwnerComponent().getModel();
-        const oVm = this.getView().getModel("ViewModel");
-
-        oModel
-          .bindList("/Queues", null, null, [
-            new Filter("Lgnum", FilterOperator.EQ, sWhseNo),
-          ])
-          .requestContexts(0, Infinity)
-          .then(function (aCtx) {
-            const aQueues = aCtx.map(function (c) {
-              return c.getObject();
-            });
-            oVm.setProperty("/queues", aQueues);
-            console.log("Queues loaded:", aQueues.length);
-          })
-          .catch(function (err) {
-            console.error("Failed to load queues:", err);
-            MessageToast.show("Failed to load queues.");
-            oVm.setProperty("/queues", []);
-          });
-      },
-
-      _loadShifts: function (sWhseNo) {
-        const oModel = this.getOwnerComponent().getModel();
-        const oVm = this.getView().getModel("ViewModel");
-
-        oModel
-          .bindList("/ShiftDayNumbers", null, null, [
-            new Filter("WarehouseNumber", FilterOperator.EQ, sWhseNo),
-          ])
-          .requestContexts(0, Infinity)
-          .then(function (aCtx) {
-            const aShifts = aCtx.map(function (c) {
-              return c.getObject();
-            });
-            oVm.setProperty("/shifts", aShifts);
-            console.log("Shifts loaded:", aShifts.length);
-          })
-          .catch(function (err) {
-            console.error("Failed to load shifts:", err);
-            MessageToast.show("Failed to load shifts.");
-            oVm.setProperty("/shifts", []);
-          });
-      },
-
-      _loadResources: function (sWhseNo) {
-        const oModel = this.getOwnerComponent().getModel();
-        const oVm = this.getView().getModel("ViewModel");
-
-        oModel
-          .bindList("/Resources", null, null, [
-            new Filter("WarehouseNumber", FilterOperator.EQ, sWhseNo),
-          ])
-          .requestContexts(0, Infinity)
-          .then(function (aCtx) {
-            const aAllResources = aCtx.map(c => c.getObject());
-
-            //  Deduplicate by Processor (ignore Shift)
-            const mUnique = {};
-            aAllResources.forEach(r => {
-              if (!mUnique[r.Processor]) {
-                mUnique[r.Processor] = {
-                  Processor: r.Processor,
-                  FullName: r.FullName || "",
-                  WarehouseNumber: r.WarehouseNumber
-                };
-              }
-            });
-
-            const aUniqueResources = Object.values(mUnique);
-
-            oVm.setProperty("/resources", aUniqueResources);
-            console.log("Unique Resources loaded:", aUniqueResources);
-          })
-          .catch(function (err) {
-            console.error("Failed to load resources:", err);
-            MessageToast.show("Failed to load resources.");
-            oVm.setProperty("/resources", []);
-          });
-      },
-
       _loadWarehouseData: function (sWhseNo) {
         const oModel = this.getOwnerComponent().getModel();
         const oVm = this.getView().getModel("ViewModel");
@@ -211,7 +123,7 @@ sap.ui.define(
                   Queue: o.Queue,
                   UtilizationRate: o.UtilizationRate,
                   __state: "UNCHANGED",
-                  __source: "DB",
+                  __source: "DB"
                 };
               });
 
@@ -241,81 +153,6 @@ sap.ui.define(
           });
       },
 
-      // _loadUtilizationRates: function (sWhseNo) {
-      //   const oModel = this.getOwnerComponent().getModel();
-      //   const oVm = this.getView().getModel("ViewModel");
-
-      //   oModel
-      //     .bindList("/UtilizationRates", null, null, [
-      //       new Filter("WhseNo", FilterOperator.EQ, sWhseNo),
-      //     ])
-      //     .requestContexts(0, Infinity)
-      //     .then(function (aCtx) {
-      //       const aRows = aCtx.map(function (c, i) {
-      //         const oData = c.getObject();
-      //         // Create unique key for matching original rows
-      //         const sRowKey =
-      //           oData.WhseNo +
-      //           "|" +
-      //           oData.Shift +
-      //           "|" +
-      //           oData.Resource +
-      //           "|" +
-      //           oData.Queue;
-      //         return {
-      //           SNo: i + 1,
-      //           __rowKey: sRowKey,
-      //           WhseNo: oData.WhseNo,
-      //           Shift: oData.Shift,
-      //           Resource: oData.Resource,
-      //           Queue: oData.Queue,
-      //           UtilizationRate: oData.UtilizationRate,
-      //           createdAt: oData.createdAt,
-      //           __state: "UNCHANGED",
-      //         };
-      //       });
-
-      //       oVm.setProperty("/rows", aRows);
-
-      //       //  Clone WITHOUT oContext to avoid circular reference
-      //       const aOriginalRows = aRows.map((row) => ({
-      //         SNo: row.SNo,
-      //         __rowKey: row.__rowKey,
-      //         WhseNo: row.WhseNo,
-      //         origShift: row.Shift,
-      //         origResource: row.Resource,
-      //         origQueue: row.Queue,
-      //         Shift: row.Shift,
-      //         Resource: row.Resource,
-      //         Queue: row.Queue,
-      //         UtilizationRate: row.UtilizationRate,
-      //         createdAt: row.createdAt,
-      //         __state: row.__state,
-      //       }));
-      //       oVm.setProperty("/originalRows", aOriginalRows);
-
-      //       if (aRows.length === 0) {
-      //         oVm.setProperty("/editMode", true);
-      //         oVm.setProperty("/toggleeditbtn", false);
-      //         oVm.setProperty("/canAddRow", true);
-      //         MessageToast.show(
-      //           "No existing records found for warehouse " + sWhseNo,
-      //         );
-      //       } else {
-      //         oVm.setProperty("/editMode", false);
-      //         oVm.setProperty("/toggleeditbtn", true);
-      //         oVm.setProperty("/canAddRow", false);
-      //       }
-      //     })
-      //     .catch(function (err) {
-      //       console.error("Failed to load utilization rates", err);
-      //       MessageToast.show("Failed to load data. You can add new rows.");
-      //       oVm.setProperty("/rows", []);
-      //       oVm.setProperty("/originalRows", []);
-      //       oVm.setProperty("/editMode", true);
-      //       oVm.setProperty("/toggleeditbtn", false);
-      //     });
-      // },
 
       /* ================= ACTIONS ================= */
 
@@ -338,7 +175,7 @@ sap.ui.define(
           Queue: "",
           UtilizationRate: 0,
           __state: "NEW",
-          __source: "UI",
+          __source: "UI"
         });
 
         oVm.setProperty("/rows", aRows);
@@ -383,210 +220,114 @@ sap.ui.define(
         const aRows = oVm.getProperty("/rows");
         const aOriginal = oVm.getProperty("/originalRows");
         const aDeletedRows = oVm.getProperty("/deletedRows") || [];
-        const aQueues = oVm.getProperty("/queues");
-        const aShifts = oVm.getProperty("/shifts");
-        const aResources = oVm.getProperty("/resources");
         const that = this;
 
-        // ========== VALIDATION ==========
-        for (var i = 0; i < aRows.length; i++) {
-          if (
-            !aRows[i].Shift ||
-            !aRows[i].Resource ||
-            !aRows[i].Queue ||
-            aRows[i].UtilizationRate === "" ||
-            aRows[i].UtilizationRate === null ||
-            aRows[i].UtilizationRate === undefined
-          ) {
+        // ===== VALIDATION =====
+        for (let i = 0; i < aRows.length; i++) {
+          const r = aRows[i];
+
+          if (!r.Shift || !r.Resource || !r.Queue || r.UtilizationRate == null || r.UtilizationRate === "") {
             MessageBox.error("Please fill all fields in row " + (i + 1));
             return;
           }
 
-          // Validate Shift exists
-          const bShiftExists = aShifts.some(function (s) {
-            return s.Timeint === aRows[i].Shift;
-          });
-          if (!bShiftExists) {
-            MessageBox.error(
-              "Shift '" +
-              aRows[i].Shift +
-              "' in row " +
-              (i + 1) +
-              " is not valid.",
-            );
-            return;
-          }
-
-          // Validate Resource exists
-          // Validate Resource ONLY for user-entered rows
-          if (aRows[i].__source === "UI") {
-            const bResourceExists = aResources.some(function (r) {
-              return r.Processor === aRows[i].Resource;
-            });
-            if (!bResourceExists) {
-              MessageBox.error(
-                "Resource '" +
-                aRows[i].Resource +
-                "' in row " +
-                (i + 1) +
-                " is not available.",
-              );
-              return;
-            }
-          }
-
-          // Validate Queue exists
-          const bQueueExists = aQueues.some(function (q) {
-            return q.Queue === aRows[i].Queue;
-          });
-          if (!bQueueExists) {
-            MessageBox.error(
-              "Queue '" +
-              aRows[i].Queue +
-              "' in row " +
-              (i + 1) +
-              " is not available.",
-            );
-            return;
-          }
-
-          if (aRows[i].UtilizationRate < 0 || aRows[i].UtilizationRate > 100) {
-            MessageBox.error(
-              "Utilization Rate in row " +
-              (i + 1) +
-              " must be between 0 and 100.",
-            );
+          if (r.UtilizationRate < 0 || r.UtilizationRate > 100) {
+            MessageBox.error("Utilization Rate must be between 0 and 100 (row " + (i + 1) + ")");
             return;
           }
         }
 
-        // Check UI duplicates
-        for (let i = 0; i < aRows.length; i++) {
-          for (let j = i + 1; j < aRows.length; j++) {
-            if (
-              aRows[i].WhseNo === aRows[j].WhseNo &&
-              aRows[i].Shift === aRows[j].Shift &&
-              aRows[i].Resource === aRows[j].Resource &&
-              aRows[i].Queue === aRows[j].Queue
-            ) {
-              MessageBox.error(
-                "Duplicate entry found.\n\nRow " +
-                (i + 1) +
-                " and Row " +
-                (j + 1) +
-                " have the same combination.",
-              );
-              return;
-            }
-          }
-        }
-
-        // Check if anything has changed
-        const bHasNewRows = aRows.some(function (row) {
-          return row.__state === "NEW";
+        // ===== CHANGE CHECK =====
+        const bHasNew = aRows.some(r => r.__state === "NEW");
+        const bHasDelete = aDeletedRows.length > 0;
+        const bHasUpdate = aRows.some(r => {
+          if (r.__state === "NEW") return false;
+          const o = aOriginal.find(x => x.__rowKey === r.__rowKey);
+          return o && Number(o.UtilizationRate) !== Number(r.UtilizationRate);
         });
 
-        const bHasDeletedRows = aDeletedRows.length > 0;
-
-        const bHasModifiedRows = aRows.some(function (row) {
-          if (row.__state === "NEW") return false;
-          const orig = aOriginal.find(function (o) {
-            return o.__rowKey === row.__rowKey;
-          });
-          if (orig) {
-            return (
-              Number(row.UtilizationRate) !== Number(orig.UtilizationRate) ||
-              row.Shift !== orig.Shift ||
-              row.Resource !== orig.Resource ||
-              row.Queue !== orig.Queue
-            );
-          }
-          return false;
-        });
-
-        if (!bHasNewRows && !bHasDeletedRows && !bHasModifiedRows) {
+        if (!bHasNew && !bHasDelete && !bHasUpdate) {
           MessageToast.show("No changes detected");
           oVm.setProperty("/editMode", false);
           oVm.setProperty("/toggleeditbtn", true);
-          oVm.setProperty("/canAddRow", false);
           return;
         }
 
         const aPromises = [];
 
-        // ========== DELETE records ==========
-        aDeletedRows.forEach(function (row) {
-          const sPath = `/UtilizationRates(WhseNo='${row.WhseNo}',Shift='${row.Shift
-            }',Resource='${row.Resource}',Queue='${encodeURIComponent(
-              row.Queue,
-            )}')`;
-          const oContext = oModel.bindContext(sPath).getBoundContext();
-          const oDeletePromise = oContext.requestObject().then(function () {
-            return oContext.delete("$auto");
-          });
-          aPromises.push(oDeletePromise);
+        // ===== DELETE =====
+        aDeletedRows.forEach(r => {
+          const sPath =
+            "/UtilizationRates(WhseNo='" + r.WhseNo +
+            "',Shift='" + r.Shift +
+            "',Resource='" + r.Resource +
+            "',Queue='" + encodeURIComponent(r.Queue) + "')";
+
+          const ctx = oModel.bindContext(sPath).getBoundContext();
+          aPromises.push(ctx.requestObject().then(() => ctx.delete("$auto")));
         });
 
-        // ========== CREATE new records ==========
-        aRows.forEach(function (row) {
-          if (row.__state === "NEW") {
-            const oListBinding = oModel.bindList("/UtilizationRates");
-            const oContext = oListBinding.create({
-              WhseNo: row.WhseNo,
-              Shift: row.Shift,
-              Resource: row.Resource,
-              Queue: row.Queue,
-              UtilizationRate: Number(row.UtilizationRate) || 0,
+        // ===== CREATE =====
+
+        aRows.forEach(r => {
+          if (r.__state === "NEW") {
+
+            const existsInDb =
+              r.__source !== "UI" &&
+              aOriginal.some(o =>
+                o.origShift === r.Shift &&
+                o.origResource === r.Resource &&
+                o.origQueue === r.Queue
+              );
+
+            if (existsInDb) {
+              // treat as UPDATE instead of CREATE
+              const sPath =
+                "/UtilizationRates(WhseNo='" + r.WhseNo +
+                "',Shift='" + r.Shift +
+                "',Resource='" + r.Resource +
+                "',Queue='" + encodeURIComponent(r.Queue) + "')";
+
+              const ctx = oModel.bindContext(sPath).getBoundContext();
+              ctx.setProperty("UtilizationRate", Number(r.UtilizationRate));
+              return;
+            }
+
+            // REAL CREATE
+            const lb = oModel.bindList("/UtilizationRates");
+            const ctx = lb.create({
+              WhseNo: r.WhseNo,
+              Shift: r.Shift,
+              Resource: r.Resource,
+              Queue: r.Queue,
+              UtilizationRate: Number(r.UtilizationRate)
             });
-            aPromises.push(oContext.created());
+            aPromises.push(ctx.created());
           }
         });
 
-        // ========== UPDATE existing records ==========
-        aRows.forEach(function (row) {
-          if (row.__state === "UNCHANGED") {
-            const orig = aOriginal.find(function (o) {
-              return o.__rowKey === row.__rowKey;
-            });
-            if (orig) {
-              //  CHECK ALL FIELDS FOR CHANGES
-              const bIsModified =
-                Number(row.UtilizationRate) !== Number(orig.UtilizationRate) ||
-                row.Shift !== orig.Shift ||
-                row.Resource !== orig.Resource ||
-                row.Queue !== orig.Queue;
 
-              if (bIsModified) {
-                //  UPDATE ALL CHANGED FIELDS
-                const sPath = `/UtilizationRates(WhseNo='${row.WhseNo
-                  }',Shift='${orig.origShift}',Resource='${orig.origResource
-                  }',Queue='${encodeURIComponent(orig.origQueue)}')`;
-                const oContext = oModel.bindContext(sPath).getBoundContext();
-                const oUpdatePromise = oContext
-                  .requestObject()
-                  .then(function () {
-                    //  Use ORIGINAL keys for OData path, NEW values for update
-                    oContext.setProperty("Shift", row.Shift);
-                    oContext.setProperty("Resource", row.Resource);
-                    oContext.setProperty("Queue", row.Queue);
-                    oContext.setProperty(
-                      "UtilizationRate",
-                      Number(row.UtilizationRate),
-                    );
-                    return oModel.submitBatch("$auto");
-                  });
-                aPromises.push(oUpdatePromise);
-              }
+        // ===== UPDATE =====
+        aRows.forEach(r => {
+          if (r.__state === "UNCHANGED") {
+            const o = aOriginal.find(x => x.__rowKey === r.__rowKey);
+            if (o && Number(o.UtilizationRate) !== Number(r.UtilizationRate)) {
+              const sPath =
+                "/UtilizationRates(WhseNo='" + r.WhseNo +
+                "',Shift='" + o.origShift +
+                "',Resource='" + o.origResource +
+                "',Queue='" + encodeURIComponent(o.origQueue) + "')";
+
+              const ctx = oModel.bindContext(sPath).getBoundContext();
+              ctx.setProperty("UtilizationRate", Number(r.UtilizationRate));
             }
           }
         });
 
-        // Wait for all operations and then submit
+        // ===== COMMIT =====
         Promise.all(aPromises)
-          .then(function () {
-            return oModel.submitBatch("$auto");
-          })
-          .then(function () {
+          .then(() => oModel.submitBatch("$auto"))
+          .then(() => {
             MessageToast.show("✅ Saved successfully");
             oVm.setProperty("/editMode", false);
             oVm.setProperty("/toggleeditbtn", true);
@@ -594,82 +335,45 @@ sap.ui.define(
             oVm.setProperty("/deletedRows", []);
             that._loadWarehouseData(that._currentWarehouse);
           })
-          .catch(function (e) {
-            console.error("Save error:", e);
-            MessageBox.error("Save failed: " + (e.message || "Unknown error"));
+          .catch(() => {
+            MessageBox.error("Save failed");
           });
       },
+
 
       /* ================= VALUE HELPS ================= */
 
       onShiftValueHelp: function (oEvent) {
         const oVm = this.getView().getModel("ViewModel");
-        const aShifts = oVm.getProperty("/shifts");
-        const oSource = oEvent.getSource();
+        const sWhseNo = this._currentWarehouse;
+        this._oShiftInput = oEvent.getSource();
 
-        if (aShifts.length === 0) {
-          MessageToast.show("No shifts available.");
+
+
+        if (oVm.getProperty("/shifts").length > 0) {
+          this._openShiftDialog();
           return;
         }
 
-        this._oShiftInput = oSource;
-
-        if (!this._oShiftDialog) {
-          const oTable = new sap.m.Table({
-            mode: "SingleSelectMaster",
-            growing: true,
-            growingThreshold: 20,
-            columns: [
-              new sap.m.Column({ header: new sap.m.Text({ text: "Shift" }) }),
-
-            ],
-            items: {
-              path: "/",
-              template: new sap.m.ColumnListItem({
-                type: "Active",
-                cells: [
-                  new sap.m.Text({ text: "{Timeint}" }),
-
-                ],
-              }),
-            },
+        sap.ui.core.BusyIndicator.show(0);
+        this.getOwnerComponent().getModel()
+          .bindList("/ShiftDayNumbers", null, null, [
+            new Filter("WarehouseNumber", FilterOperator.EQ, sWhseNo),
+          ])
+          .requestContexts(0, Infinity)
+          .then(aCtx => {
+            oVm.setProperty(
+              "/shifts",
+              aCtx.map(c => c.getObject())
+            );
+            this._openShiftDialog();
+          }).catch(() => {
+            MessageToast.show("Failed to load Shifts");
+          }).finally(() => {
+            sap.ui.core.BusyIndicator.hide();
           });
-
-          const oSearchField = new sap.m.SearchField({
-            width: "100%",
-            placeholder: "Search Shift...",
-            search: this.onShiftVHSearch.bind(this),
-            liveChange: this.onShiftVHSearch.bind(this),
-          });
-
-          this._oShiftDialog = new sap.m.Dialog({
-            title: "Select Shift",
-            contentWidth: "600px",
-            contentHeight: "500px",
-            draggable: true,
-            resizable: true,
-            content: [oSearchField, oTable],
-            endButton: new sap.m.Button({
-              text: "Cancel",
-              press: function () {
-                this._oShiftDialog.close();
-              }.bind(this),
-            }),
-          });
-
-          this._oShiftDialog.setModel(new JSONModel(aShifts));
-          this.getView().addDependent(this._oShiftDialog);
-          this._oShiftTable = oTable;
-        } else {
-          this._oShiftDialog.getModel().setData(aShifts);
-        }
-
-        this._oShiftTable.getBinding("items").filter([]);
-        this._oShiftTable.removeSelections(true);
-        this._oShiftTable.detachSelectionChange(this.onShiftRowSelect, this);
-        this._oShiftTable.attachSelectionChange(this.onShiftRowSelect, this);
-        this._oShiftDialog.open();
       },
+
 
       onShiftRowSelect: function (oEvent) {
         const oSelectedItem = oEvent.getParameter("listItem");
@@ -710,80 +414,48 @@ sap.ui.define(
 
       onResourceValueHelp: function (oEvent) {
         const oVm = this.getView().getModel("ViewModel");
-        const aResources = oVm.getProperty("/resources");
         const oSource = oEvent.getSource();
-
-        if (aResources.length === 0) {
-          MessageToast.show("No resources available.");
-          return;
-        }
+        const sWhseNo = this._currentWarehouse;
 
         this._oResourceInput = oSource;
 
-        if (!this._oResourceDialog) {
-          const oTable = new sap.m.Table({
-            mode: "SingleSelectMaster",
-            growing: true,
-            growingThreshold: 20,
-            columns: [
-              new sap.m.Column({
-                header: new sap.m.Text({ text: "Resource" }),
-              }),
-              new sap.m.Column({ header: new sap.m.Text({ text: "Name" }) }),
-            ],
-            items: {
-              path: "/",
-              template: new sap.m.ColumnListItem({
-                type: "Active",
-                cells: [
-                  new sap.m.Text({ text: "{Processor}" }),
-                  new sap.m.Text({ text: "{FullName}" })
-                ],
-              }),
-            },
-          });
-
-          const oSearchField = new sap.m.SearchField({
-            width: "100%",
-            placeholder: "Search Resource...",
-            search: this.onResourceVHSearch.bind(this),
-            liveChange: this.onResourceVHSearch.bind(this),
-          });
-
-          this._oResourceDialog = new sap.m.Dialog({
-            title: "Select Resource",
-            contentWidth: "600px",
-            contentHeight: "500px",
-            draggable: true,
-            resizable: true,
-            content: [oSearchField, oTable],
-            endButton: new sap.m.Button({
-              text: "Cancel",
-              press: function () {
-                this._oResourceDialog.close();
-              }.bind(this),
-            }),
-          });
-
-          this._oResourceDialog.setModel(new JSONModel(aResources));
-          this.getView().addDependent(this._oResourceDialog);
-          this._oResourceTable = oTable;
-        } else {
-          this._oResourceDialog.getModel().setData(aResources);
+        //  If already loaded, just open dialog
+        if (oVm.getProperty("/resources").length > 0) {
+          this._openResourceDialog();
+          return;
         }
 
-        this._oResourceTable.getBinding("items").filter([]);
-        this._oResourceTable.removeSelections(true);
-        this._oResourceTable.detachSelectionChange(
-          this.onResourceRowSelect,
-          this,
-        );
-        this._oResourceTable.attachSelectionChange(
-          this.onResourceRowSelect,
-          this,
-        );
-        this._oResourceDialog.open();
+        sap.ui.core.BusyIndicator.show(0);
+        const oModel = this.getOwnerComponent().getModel();
+
+        oModel.bindList("/Resources", null, null, [
+          new Filter("WarehouseNumber", FilterOperator.EQ, sWhseNo),
+        ])
+          .requestContexts(0, Infinity)
+          .then(aCtx => {
+            const aAll = aCtx.map(c => c.getObject());
+
+            // Deduplicate by Processor
+            const m = {};
+            aAll.forEach(r => {
+              if (!m[r.Processor]) {
+                m[r.Processor] = {
+                  Processor: r.Processor,
+                  FullName: r.FullName || ""
+                };
+              }
+            });
+
+            oVm.setProperty("/resources", Object.values(m));
+            this._openResourceDialog();
+          })
+          .catch(() => {
+            MessageToast.show("Failed to load resources");
+          }).finally(() => {
+            sap.ui.core.BusyIndicator.hide();
+          });
       },
+
 
       onResourceRowSelect: function (oEvent) {
         const oSelectedItem = oEvent.getParameter("listItem");
@@ -825,74 +497,32 @@ sap.ui.define(
 
       onQueueValueHelp: function (oEvent) {
         const oVm = this.getView().getModel("ViewModel");
-        const aQueues = oVm.getProperty("/queues");
-        const oSource = oEvent.getSource();
+        const sWhseNo = this._currentWarehouse;
+        this._oQueueInput = oEvent.getSource();
 
-        if (aQueues.length === 0) {
-          MessageToast.show("No queues available.");
+        if (oVm.getProperty("/queues").length > 0) {
+          this._openQueueDialog();
           return;
         }
-
-        this._oQueueInput = oSource;
-
-        if (!this._oQueueDialog) {
-          const oTable = new sap.m.Table({
-            mode: "SingleSelectMaster",
-            growing: true,
-            growingThreshold: 20,
-            columns: [
-              new sap.m.Column({ header: new sap.m.Text({ text: "Queue" }) }),
-              new sap.m.Column({
-                header: new sap.m.Text({ text: "Description" }),
-              }),
-            ],
-            items: {
-              path: "/",
-              template: new sap.m.ColumnListItem({
-                type: "Active",
-                cells: [
-                  new sap.m.Text({ text: "{Queue}" }),
-                  new sap.m.Text({ text: "{Text}" }),
-                ],
-              }),
-            },
+        sap.ui.core.BusyIndicator.show(0);
+        this.getOwnerComponent().getModel()
+          .bindList("/Queues", null, null, [
+            new Filter("Lgnum", FilterOperator.EQ, sWhseNo),
+          ])
+          .requestContexts(0, Infinity)
+          .then(aCtx => {
+            oVm.setProperty(
+              "/queues",
+              aCtx.map(c => c.getObject())
+            );
+            this._openQueueDialog();
+          }).catch(() => {
+            MessageToast.show("Failed to load Queues");
+          }).finally(() => {
+            sap.ui.core.BusyIndicator.hide();
           });
-
-          const oSearchField = new sap.m.SearchField({
-            width: "100%",
-            placeholder: "Search Queue...",
-            search: this.onQueueVHSearch.bind(this),
-            liveChange: this.onQueueVHSearch.bind(this),
-          });
-
-          this._oQueueDialog = new sap.m.Dialog({
-            title: "Select Queue",
-            contentWidth: "600px",
-            contentHeight: "500px",
-            draggable: true,
-            resizable: true,
-            content: [oSearchField, oTable],
-            endButton: new sap.m.Button({
-              text: "Cancel",
-              press: function () {
-                this._oQueueDialog.close();
-              }.bind(this),
-            }),
-          });
-
-          this._oQueueDialog.setModel(new JSONModel(aQueues));
-          this.getView().addDependent(this._oQueueDialog);
-          this._oQueueTable = oTable;
-        } else {
-          this._oQueueDialog.getModel().setData(aQueues);
-        }
-
-        this._oQueueTable.getBinding("items").filter([]);
-        this._oQueueTable.removeSelections(true);
-        this._oQueueTable.detachSelectionChange(this.onQueueRowSelect, this);
-        this._oQueueTable.attachSelectionChange(this.onQueueRowSelect, this);
-        this._oQueueDialog.open();
       },
+
 
       onQueueRowSelect: function (oEvent) {
         const oSelectedItem = oEvent.getParameter("listItem");
@@ -930,6 +560,188 @@ sap.ui.define(
 
         this._oQueueTable.getBinding("items").filter(aFilters);
       },
+      _openResourceDialog: function () {
+        const oVm = this.getView().getModel("ViewModel");
+        const aResources = oVm.getProperty("/resources");
+
+        if (!this._oResourceDialog) {
+          const oTable = new sap.m.Table({
+            mode: "SingleSelectMaster",
+            growing: true,
+            growingThreshold: 20,
+            columns: [
+              new sap.m.Column({ header: new sap.m.Text({ text: "Resource" }) }),
+              new sap.m.Column({ header: new sap.m.Text({ text: "Name" }) }),
+            ],
+            items: {
+              path: "/",
+              template: new sap.m.ColumnListItem({
+                type: "Active",
+                cells: [
+                  new sap.m.Text({ text: "{Processor}" }),
+                  new sap.m.Text({ text: "{FullName}" }),
+                ],
+              }),
+            },
+          });
+
+          const oSearchField = new sap.m.SearchField({
+            width: "100%",
+            placeholder: "Search Resource...",
+            liveChange: this.onResourceVHSearch.bind(this),
+            search: this.onResourceVHSearch.bind(this),
+          });
+
+          this._oResourceDialog = new sap.m.Dialog({
+            title: "Select Resource",
+            contentWidth: "600px",
+            contentHeight: "500px",
+            draggable: true,
+            resizable: true,
+            content: [oSearchField, oTable],
+            endButton: new sap.m.Button({
+              text: "Cancel",
+              press: () => this._oResourceDialog.close(),
+            }),
+          });
+
+          this._oResourceDialog.setModel(new JSONModel(aResources));
+          this.getView().addDependent(this._oResourceDialog);
+          this._oResourceTable = oTable;
+        } else {
+          this._oResourceDialog.getModel().setData(aResources);
+        }
+
+        this._oResourceTable.removeSelections(true);
+        this._oResourceTable
+          .getBinding("items")
+          .filter([]);
+        this._oResourceTable.attachSelectionChange(
+          this.onResourceRowSelect,
+          this
+        );
+
+        this._oResourceDialog.open();
+      },
+      _openShiftDialog: function () {
+        const oVm = this.getView().getModel("ViewModel");
+        const aShifts = oVm.getProperty("/shifts");
+
+        if (!this._oShiftDialog) {
+          const oTable = new sap.m.Table({
+            mode: "SingleSelectMaster",
+            growing: true,
+            columns: [
+              new sap.m.Column({ header: new sap.m.Text({ text: "Shift" }) }),
+            ],
+            items: {
+              path: "/",
+              template: new sap.m.ColumnListItem({
+                type: "Active",
+                cells: [new sap.m.Text({ text: "{Timeint}" })],
+              }),
+            },
+          });
+
+          const oSearchField = new sap.m.SearchField({
+            width: "100%",
+            placeholder: "Search Shift...",
+            liveChange: this.onShiftVHSearch.bind(this),
+            search: this.onShiftVHSearch.bind(this),
+          });
+
+          this._oShiftDialog = new sap.m.Dialog({
+            title: "Select Shift",
+            contentWidth: "600px",
+            contentHeight: "500px",
+            draggable: true,
+            resizable: true,
+            content: [oSearchField, oTable],
+            endButton: new sap.m.Button({
+              text: "Cancel",
+              press: () => this._oShiftDialog.close(),
+            }),
+          });
+
+          this._oShiftDialog.setModel(new JSONModel(aShifts));
+          this.getView().addDependent(this._oShiftDialog);
+          this._oShiftTable = oTable;
+        } else {
+          this._oShiftDialog.getModel().setData(aShifts);
+        }
+
+        this._oShiftTable.removeSelections(true);
+        this._oShiftTable.getBinding("items").filter([]);
+        this._oShiftTable.attachSelectionChange(
+          this.onShiftRowSelect,
+          this
+        );
+
+        this._oShiftDialog.open();
+      },
+
+      _openQueueDialog: function () {
+        const oVm = this.getView().getModel("ViewModel");
+        const aQueues = oVm.getProperty("/queues");
+
+        if (!this._oQueueDialog) {
+          const oTable = new sap.m.Table({
+            mode: "SingleSelectMaster",
+            growing: true,
+            columns: [
+              new sap.m.Column({ header: new sap.m.Text({ text: "Queue" }) }),
+              new sap.m.Column({ header: new sap.m.Text({ text: "Description" }) }),
+            ],
+            items: {
+              path: "/",
+              template: new sap.m.ColumnListItem({
+                type: "Active",
+                cells: [
+                  new sap.m.Text({ text: "{Queue}" }),
+                  new sap.m.Text({ text: "{Text}" }),
+                ],
+              }),
+            },
+          });
+
+          const oSearchField = new sap.m.SearchField({
+            width: "100%",
+            placeholder: "Search Queue...",
+            liveChange: this.onQueueVHSearch.bind(this),
+            search: this.onQueueVHSearch.bind(this),
+          });
+
+          this._oQueueDialog = new sap.m.Dialog({
+            title: "Select Queue",
+            contentWidth: "600px",
+            contentHeight: "500px",
+            draggable: true,
+            resizable: true,
+            content: [oSearchField, oTable],
+            endButton: new sap.m.Button({
+              text: "Cancel",
+              press: () => this._oQueueDialog.close(),
+            }),
+          });
+
+          this._oQueueDialog.setModel(new JSONModel(aQueues));
+          this.getView().addDependent(this._oQueueDialog);
+          this._oQueueTable = oTable;
+        } else {
+          this._oQueueDialog.getModel().setData(aQueues);
+        }
+
+        this._oQueueTable.removeSelections(true);
+        this._oQueueTable.getBinding("items").filter([]);
+        this._oQueueTable.attachSelectionChange(
+          this.onQueueRowSelect,
+          this
+        );
+
+        this._oQueueDialog.open();
+      },
+
+
     });
   },
 );

@@ -3,7 +3,7 @@
   xmlns="sap.m"
   xmlns:layout="sap.ui.layout"
   xmlns:table="sap.ui.table"
-  xmlns:rowmodes="sap.ui.table.rowmodes">
+  xmlns:rowm="sap.ui.table.rowmodes">
 
 
   <Page id="shiftDetailsPage" showNavButton="true" navButtonPress="onNavBack">
@@ -45,13 +45,15 @@
             </headerToolbar>
 
             <content>
-              <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
-
+              <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>queues}.length }" ></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column width="17rem">
                     <Label text="Tasks"/>
                     <table:template>
-                      <ObjectStatus   text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
+                      <ObjectStatus text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -65,14 +67,25 @@
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Planned Capacity"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>PlannedLaborCapacity', formatter: '.formatTarget'}" state="Information" class="boldStatus" />
+                      <ObjectStatus text="{ parts: [
+                                              { path: 'viewModel>PlannedLaborCapacity' },
+                                              { path: 'viewModel>SequenceNumber' }
+                                                   ],
+                                            formatter: '.formatOptionalMetric'
+                                          }" state="Information" class="boldStatus" />
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Available Work"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>AvailableWorkinQueue', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                      <ObjectStatus text="{
+                                          parts: [
+                                            { path: 'viewModel>AvailableWorkinQueue' },
+                                            { path: 'viewModel>SequenceNumber' }
+                                          ],
+                                          formatter: '.formatOptionalMetric'
+                                        }" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -93,14 +106,26 @@
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Delta"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}" class="boldStatus purpleStatus" />
+                      <ObjectStatus text="{
+                                      parts: [
+                                        { path: 'viewModel>Delta' },
+                                        { path: 'viewModel>SequenceNumber' }
+                                      ],
+                                      formatter: '.formatOptionalMetric'
+                                    }" class="boldStatus purpleStatus" />
                     </table:template>
                   </table:Column>
 
                   <table:Column width="auto" hAlign="Center">
                     <Label text="Volume Added"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>VolumeAdded', formatter: '.formatTarget'}" state="Error" class="boldStatus" />
+                      <ObjectStatus text="{
+                                        parts: [
+                                          { path: 'viewModel>VolumeAdded' },
+                                          { path: 'viewModel>SequenceNumber' }
+                                        ],
+                                        formatter: '.formatOptionalMetric'
+                                      }" state="Error" class="boldStatus" />
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -139,7 +164,7 @@
                   <table:Column width="17rem">
                     <Label text="Tasks"/>
                     <table:template>
-                      <ObjectStatus   text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
+                      <ObjectStatus text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -232,15 +257,17 @@
 
 
                       <content>
-                        <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" visibleRowCount="{= ${viewModel>queues}.length }">
+                        <table:Table rows="{viewModel>queues}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" >
 
-
+                          <table:rowMode>
+                          <rowm:Fixed rowCount="{= ${viewModel>queues}.length }"></rowm:Fixed>
+                          </table:rowMode>
 
                           <table:columns>
                             <table:Column width="13rem">
                               <Label text="Tasks"/>
                               <table:template>
-                                <ObjectStatus   text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
+                                <ObjectStatus text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -256,7 +283,12 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Planned Capacity"/>
                               <table:template>
-                                <ObjectStatus text="{path: 'viewModel>PlannedLaborCapacity', formatter: '.formatTarget'}" state="Information" class="boldStatus"/>
+                              <ObjectStatus text="{ parts: [
+                                              { path: 'viewModel>PlannedLaborCapacity' },
+                                              { path: 'viewModel>SequenceNumber' }
+                                                   ],
+                                            formatter: '.formatOptionalMetric'
+                                          }" state="Information" class="boldStatus" />
                               </table:template>
                             </table:Column>
 
@@ -264,7 +296,13 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Available Work"/>
                               <table:template>
-                                <ObjectStatus text="{path: 'viewModel>AvailableWorkinQueue', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                              <ObjectStatus text="{
+                                          parts: [
+                                            { path: 'viewModel>AvailableWorkinQueue' },
+                                            { path: 'viewModel>SequenceNumber' }
+                                          ],
+                                          formatter: '.formatOptionalMetric'
+                                        }" state="Error" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -287,14 +325,26 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Delta"/>
                               <table:template>
-                                <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}" class="boldStatus purpleStatus"/>
+                               <ObjectStatus text="{
+                                      parts: [
+                                        { path: 'viewModel>Delta' },
+                                        { path: 'viewModel>SequenceNumber' }
+                                      ],
+                                      formatter: '.formatOptionalMetric'
+                                    }" class="boldStatus purpleStatus" />
                               </table:template>
                             </table:Column>
 
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Volume Added"/>
                               <table:template>
-                                <ObjectStatus text="{path: 'viewModel>VolumeAdded', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                               <ObjectStatus text="{
+                                        parts: [
+                                          { path: 'viewModel>VolumeAdded' },
+                                          { path: 'viewModel>SequenceNumber' }
+                                        ],
+                                        formatter: '.formatOptionalMetric'
+                                      }" state="Error" class="boldStatus" />
                               </table:template>
                             </table:Column>
                           </table:columns>
@@ -334,10 +384,10 @@
 
 
                           <table:columns>
-                            <table:Column  width="13rem">
+                            <table:Column width="13rem">
                               <Label text="Tasks"/>
                               <table:template>
-                                <ObjectStatus    text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }"  class="boldStatus"/>
+                                <ObjectStatus text="{= ${viewModel>QueueDescription} || ${viewModel>Queue} }" class="boldStatus"/>
                               </table:template>
                             </table:Column>
 
@@ -384,7 +434,7 @@
                             <table:Column width="auto" hAlign="Center">
                               <Label text="Delta"/>
                               <table:template>
-                                <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}"  class="boldStatus purpleStatus"/>
+                                <ObjectStatus text="{path: 'viewModel>Delta', formatter: '.formatTarget'}" class="boldStatus purpleStatus"/>
                               </table:template>
                             </table:Column>
 

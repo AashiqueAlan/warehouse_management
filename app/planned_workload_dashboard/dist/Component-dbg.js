@@ -20,7 +20,7 @@ sap.ui.define([
             // set the device model
             this.setModel(models.createDeviceModel(), "device");
 
-            // Create navigation data model to store large data between route navigation
+            // Created navigation data model to store large data between route navigation
             const oNavigationModel = new JSONModel({
                 navigationData: null
             });

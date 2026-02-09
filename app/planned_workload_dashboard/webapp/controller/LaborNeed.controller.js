@@ -88,7 +88,7 @@ sap.ui.define([
 
         vm.setProperty("/inboundData", oData.inboundData || []);
         vm.setProperty("/outboundData", oData.outboundData || []);
-
+        
         vm.setProperty("/showInboundOnly", oData.reportType === "IN");
         vm.setProperty("/showOutboundOnly", oData.reportType === "OUT");
         vm.setProperty("/showBothPanels", oData.reportType === "BOTH");

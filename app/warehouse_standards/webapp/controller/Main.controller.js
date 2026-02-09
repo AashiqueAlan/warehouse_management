@@ -29,7 +29,7 @@ sap.ui.define(
           uoms: [],
           editMode: false,
           toggleeditbtn: true,
-          
+          canAddRow: false,
           warehouseDisplay: "",
         });
 
@@ -53,77 +53,31 @@ sap.ui.define(
 
         const oVm = this.getView().getModel("ViewModel");
         oVm.setProperty("/warehouseDisplay", sWhseNo);
+        oVm.setProperty("/queues", []);
+        oVm.setProperty("/uoms", []);
         oVm.setProperty("/rows", []);
         oVm.setProperty("/originalRows", []);
         oVm.setProperty("/deletedRows", []);
 
-        // Load data
-        this._loadQueues(sWhseNo);
-        this._loadUoms();
+
         this._loadWarehouseStandards(sWhseNo);
-        
-        // this._checkEditAuthorization(sWhseNo);
+
+
 
       },
 
       /* ================= LOADERS ================= */
 
-      _loadQueues: function (sWhseNo) {
-        const oModel = this.getOwnerComponent().getModel();
-        const oVm = this.getView().getModel("ViewModel");
-
-        oModel
-          .bindList("/Queues", null, null, [
-            new Filter("Lgnum", FilterOperator.EQ, sWhseNo),
-          ])
-          .requestContexts(0, Infinity)
-          .then(function (aCtx) {
-            const aQueues = aCtx.map(function (c) {
-              return c.getObject();
-            });
-            oVm.setProperty("/queues", aQueues);
-            console.log("Queues loaded:", aQueues.length);
-          })
-          .catch(function (err) {
-            console.error("Failed to load queues:", err);
-            MessageToast.show("Failed to load queues. Using empty list.");
-            oVm.setProperty("/queues", []);
-          });
-      },
-
-      _loadUoms: function () {
-        const oVm = this.getView().getModel("ViewModel");
-
-        const oModel = this.getOwnerComponent().getModel();
-        oModel
-          .bindList("/UnitsOfMeasure")
-          .requestContexts(0, Infinity)
-          .then(function (aCtx) {
-            const aUoms = aCtx.map(function (c) {
-              return c.getObject();
-            });
-            oVm.setProperty("/uoms", aUoms);
-            console.log("UOMs loaded:", aUoms.length);
-          })
-          .catch(function (err) {
-            console.error("Failed to load UOMs:", err);
-            MessageToast.show(
-              "Failed to load UOMs from backend. Using default list."
-            );
-            oVm.setProperty("/uoms", aFallbackUoms);
-          });
-      },
-
       _loadWarehouseStandards: function (sWhseNo) {
         const oModel = this.getOwnerComponent().getModel();
         const oVm = this.getView().getModel("ViewModel");
-        const that = this;
+        // const that = this;
 
         oModel
           .bindList(
             "/WarehouseStandards",
             null,
-            [new Sorter("Queue", false)],
+            null,
             [new Filter("WhseNo", FilterOperator.EQ, sWhseNo)]
           )
           .requestContexts(0, Infinity)
@@ -241,49 +195,31 @@ sap.ui.define(
 
         // Validation - Check if all fields are filled
         for (var i = 0; i < aRows.length; i++) {
-          if (
-            !aRows[i].Queue ||
-            !aRows[i].Uom ||
+          if (!aRows[i].Queue || !aRows[i].Uom ||
             aRows[i].Value === "" ||
             aRows[i].Value === null ||
-            aRows[i].Value === undefined
-          ) {
+            aRows[i].Value === undefined) {
             MessageBox.error("Please fill all fields in row " + (i + 1));
             return;
           }
 
-          // Validate Queue exists for this warehouse
-          const bQueueExists = aQueues.some(function (q) {
-            return q.Queue === aRows[i].Queue;
-          });
+          if (aRows[i].__state === "NEW") {
+            const bQueueExists = aQueues.some(q => q.Queue === aRows[i].Queue);
+            if (!bQueueExists) {
+              MessageBox.error(
+                "Queue '" + aRows[i].Queue + "' in row " + (i + 1) +
+                " is not available for warehouse " + that._currentWarehouse
+              );
+              return;
+            }
 
-          if (!bQueueExists) {
-            MessageBox.error(
-              "Queue '" +
-              aRows[i].Queue +
-              "' in row " +
-              (i + 1) +
-              " is not available for warehouse " +
-              that._currentWarehouse +
-              ". Please select a valid queue from the list."
-            );
-            return;
-          }
-
-          // Validate UOM exists
-          const bUomExists = aUoms.some(function (u) {
-            return u.Msehi === aRows[i].Uom;
-          });
-
-          if (!bUomExists) {
-            MessageBox.error(
-              "UOM '" +
-              aRows[i].Uom +
-              "' in row " +
-              (i + 1) +
-              " is not valid. Please select a valid UOM from the list."
-            );
-            return;
+            const bUomExists = aUoms.some(u => u.Msehi === aRows[i].Uom);
+            if (!bUomExists) {
+              MessageBox.error(
+                "UOM '" + aRows[i].Uom + "' in row " + (i + 1) + " is not valid"
+              );
+              return;
+            }
           }
         }
 
@@ -372,7 +308,7 @@ sap.ui.define(
               const oUpdatePromise = oContext.requestObject().then(function () {
                 oContext.setProperty("Value", Number(row.Value) || 0);
                 oContext.setProperty("Uom", row.Uom);
-                return oModel.submitBatch("$auto");
+                // return oModel.submitBatch("$auto");
               });
               aPromises.push(oUpdatePromise);
             }
@@ -409,15 +345,40 @@ sap.ui.define(
 
       onQueueValueHelp: function (oEvent) {
         const oVm = this.getView().getModel("ViewModel");
-        const aQueues = oVm.getProperty("/queues");
-        const oSource = oEvent.getSource();
+        const sWhseNo = this._currentWarehouse;
+        this._oQueueInput = oEvent.getSource();
 
-        if (aQueues.length === 0) {
-          MessageToast.show("No queues available. Please type manually.");
+        //  Cached for this warehouse
+        if (oVm.getProperty("/queues").length > 0) {
+          this._openQueueDialog();
           return;
         }
 
-        this._oQueueInput = oSource;
+        sap.ui.core.BusyIndicator.show(0);
+
+        this.getOwnerComponent()
+          .getModel()
+          .bindList("/Queues", null, null, [
+            new Filter("Lgnum", FilterOperator.EQ, sWhseNo),
+          ])
+          .requestContexts(0, Infinity)
+          .then(aCtx => {
+            oVm.setProperty(
+              "/queues",
+              aCtx.map(c => c.getObject())
+            );
+            this._openQueueDialog();
+          })
+          .catch(() => {
+            MessageToast.show("Failed to load Queues");
+          })
+          .finally(() => {
+            sap.ui.core.BusyIndicator.hide();
+          });
+      },
+      _openQueueDialog: function () {
+        const oVm = this.getView().getModel("ViewModel");
+        const aQueues = oVm.getProperty("/queues");
 
         if (!this._oQueueDialog) {
           const oTable = new sap.m.Table({
@@ -425,7 +386,9 @@ sap.ui.define(
             growing: true,
             growingThreshold: 20,
             columns: [
-              new sap.m.Column({ header: new sap.m.Text({ text: "Queue" }) }),
+              new sap.m.Column({
+                header: new sap.m.Text({ text: "Queue" }),
+              }),
               new sap.m.Column({
                 header: new sap.m.Text({ text: "Description" }),
               }),
@@ -445,8 +408,8 @@ sap.ui.define(
           const oSearchField = new sap.m.SearchField({
             width: "100%",
             placeholder: "Search Queue...",
-            search: this.onQueueVHSearch.bind(this),
             liveChange: this.onQueueVHSearch.bind(this),
+            search: this.onQueueVHSearch.bind(this),
           });
 
           this._oQueueDialog = new sap.m.Dialog({
@@ -458,9 +421,7 @@ sap.ui.define(
             content: [oSearchField, oTable],
             endButton: new sap.m.Button({
               text: "Cancel",
-              press: function () {
-                this._oQueueDialog.close();
-              }.bind(this),
+              press: () => this._oQueueDialog.close(),
             }),
           });
 
@@ -468,15 +429,21 @@ sap.ui.define(
           this.getView().addDependent(this._oQueueDialog);
           this._oQueueTable = oTable;
         } else {
+          // Refresh data if cache changed
           this._oQueueDialog.getModel().setData(aQueues);
         }
 
-        this._oQueueTable.getBinding("items").filter([]);
         this._oQueueTable.removeSelections(true);
-        this._oQueueTable.detachSelectionChange(this.onQueueRowSelect, this);
-        this._oQueueTable.attachSelectionChange(this.onQueueRowSelect, this);
+        this._oQueueTable.getBinding("items").filter([]);
+        this._oQueueTable.attachSelectionChange(
+          this.onQueueRowSelect,
+          this
+        );
+
         this._oQueueDialog.open();
       },
+
+
 
       onQueueRowSelect: function (oEvent) {
         const oSelectedItem = oEvent.getParameter("listItem");
@@ -530,11 +497,37 @@ sap.ui.define(
 
       onUomValueHelp: function (oEvent) {
         const oVm = this.getView().getModel("ViewModel");
-        const aUoms = oVm.getProperty("/uoms");
-        const oSource = oEvent.getSource();
-        const that = this;
+        this._oUomInput = oEvent.getSource();
 
-        this._oUomInput = oSource;
+        //  Cached
+        if (oVm.getProperty("/uoms").length > 0) {
+          this._openUomDialog();
+          return;
+        }
+
+        sap.ui.core.BusyIndicator.show(0);
+
+        this.getOwnerComponent()
+          .getModel()
+          .bindList("/UnitsOfMeasure")
+          .requestContexts(0, Infinity)
+          .then(aCtx => {
+            oVm.setProperty(
+              "/uoms",
+              aCtx.map(c => c.getObject())
+            );
+            this._openUomDialog();
+          })
+          .catch(() => {
+            MessageToast.show("Failed to load UOMs");
+          })
+          .finally(() => {
+            sap.ui.core.BusyIndicator.hide();
+          });
+      },
+      _openUomDialog: function () {
+        const oVm = this.getView().getModel("ViewModel");
+        const aUoms = oVm.getProperty("/uoms");
 
         if (!this._oUomDialog) {
           const oTable = new sap.m.Table({
@@ -564,8 +557,8 @@ sap.ui.define(
           const oSearchField = new sap.m.SearchField({
             width: "100%",
             placeholder: "Search UOM...",
-            search: this.onUomVHSearch.bind(this),
             liveChange: this.onUomVHSearch.bind(this),
+            search: this.onUomVHSearch.bind(this),
           });
 
           this._oUomDialog = new sap.m.Dialog({
@@ -577,9 +570,7 @@ sap.ui.define(
             content: [oSearchField, oTable],
             endButton: new sap.m.Button({
               text: "Cancel",
-              press: function () {
-                this._oUomDialog.close();
-              }.bind(this),
+              press: () => this._oUomDialog.close(),
             }),
           });
 
@@ -587,15 +578,20 @@ sap.ui.define(
           this.getView().addDependent(this._oUomDialog);
           this._oUomTable = oTable;
         } else {
+          // Refresh data if cache changed
           this._oUomDialog.getModel().setData(aUoms);
         }
 
-        this._oUomTable.getBinding("items").filter([]);
         this._oUomTable.removeSelections(true);
-        this._oUomTable.detachSelectionChange(this.onUomRowSelect, this);
-        this._oUomTable.attachSelectionChange(this.onUomRowSelect, this);
+        this._oUomTable.getBinding("items").filter([]);
+        this._oUomTable.attachSelectionChange(
+          this.onUomRowSelect,
+          this
+        );
+
         this._oUomDialog.open();
       },
+
 
       onUomRowSelect: function (oEvent) {
         const oSelectedItem = oEvent.getParameter("listItem");
@@ -634,9 +630,9 @@ sap.ui.define(
         this._oUomTable.getBinding("items").filter(aFilters);
       },
 
-      
 
-      
+
+
 
     });
   }

@@ -561,7 +561,7 @@ sap.ui.define(
           return;
         }
 
-        // Direction label (existing logic)
+        // Direction label 
         let directionLabel = "Queue";
         if (reportType === "IN") {
           directionLabel = "Inbound Queue";
@@ -574,7 +574,7 @@ sap.ui.define(
         vm.setProperty("/isLoading", true);
         vm.setProperty("/showResults", false);
 
-        //  SINGLE PAYLOAD — FLAG BASED 
+        // single payload -> flag based
         const oPayload = {
           WarehouseNumber: whse,
           ReportType: reportType,

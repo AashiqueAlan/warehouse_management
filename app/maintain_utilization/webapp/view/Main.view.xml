@@ -38,12 +38,14 @@
           </Column>
 
           <Column>
-            <Text text="Resource" />
+            <Text text="Queue" />
           </Column>
 
           <Column>
-            <Text text="Queue" />
+            <Text text="Resource" />
           </Column>
+
+
 
           <Column>
             <Text text="Utilization Rate (%)" />
@@ -59,19 +61,15 @@
               <Text text="{ViewModel>SNo}" />
 
               <!-- Shift -->
-              <Input value="{ViewModel>Shift}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW' &amp;&amp; ${ViewModel>__source} !== 'BACKEND'}" showValueHelp="true" valueHelpRequest="onShiftValueHelp" placeholder="Select Shift" />
+              <Input value="{ViewModel>Shift}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__source} === 'UI' }" showValueHelp="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__source} === 'UI' }" valueHelpRequest=".onShiftValueHelp" placeholder="Select Shifts"/>
+              <!-- Queue -->
+              <Input value="{ViewModel>Queue}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__source} !== 'DB' }" showValueHelp="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__source} !== 'DB' }" valueHelpRequest=".onQueueValueHelp"  placeholder="Select Queue"/>
 
               <!-- Resource -->
-              <Input value="{ViewModel>Resource}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} === 'NEW' &amp;&amp; ${ViewModel>__source} !== 'BACKEND'}" showValueHelp="true" valueHelpRequest="onResourceValueHelp" placeholder="Select Resource" />
-
-              <!-- Queue -->
-              <Input value="{ViewModel>Queue}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} !== 'READONLY'}" showValueHelp="true" valueHelpRequest="onQueueValueHelp" placeholder="Select Queue" />
+              <Input value="{ViewModel>Resource}" editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__source} === 'UI' }" showValueHelp="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__source} === 'UI' }" valueHelpRequest=".onResourceValueHelp"  placeholder="Select Resources" />
 
               <!-- Utilization Rate -->
-              <Input value="{ViewModel>UtilizationRate}" 
-       editable="{= ${ViewModel>/editMode} &amp;&amp; ${ViewModel>__state} !== 'READONLY'}" 
-       type="Number" 
-       placeholder="0 - 100" />
+              <Input value="{ViewModel>UtilizationRate}" type="Number" editable="{ViewModel>/editMode}" placeholder="Enter Rate"/>
 
             </cells>
           </ColumnListItem>

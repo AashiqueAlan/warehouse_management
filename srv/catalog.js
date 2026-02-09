@@ -1,5 +1,4 @@
 const cds = require("@sap/cds");
-const { check } = require("@sap/cds/lib/utils/version");
 
 module.exports = cds.service.impl(async function () {
   const extSrv = await cds.connect.to("ZEWM_WHS_LM_SRV");
@@ -109,6 +108,8 @@ module.exports = cds.service.impl(async function () {
   this.on("READ", ShiftProcessors, (req) => extSrv.run(req.query));
   this.on("READ", ReadWhsProcessor, (req) => extSrv.run(req.query));
 
+  
+
   // ======================================================
   //  Action: getShiftViewData
   //  Calls ECC backend deep entity and merges with local HANA data
@@ -171,16 +172,16 @@ module.exports = cds.service.impl(async function () {
         if (WavedDate && PickCompleteDate) {
           query = query.and('Appt_start', '>=', WavedDate)
             .and('Appt_start', '<=', PickCompleteDate);
-        } 
+        }
 
         const result = await query;
-        console.log('where', where);
-        console.log('WavedDate:', WavedDate, 'PickCompleteDate:', PickCompleteDate);
-        console.log('appointments', result);
+        // console.log('where', where);
+        // console.log('WavedDate:', WavedDate, 'PickCompleteDate:', PickCompleteDate);
+        // console.log('appointments', result);
         return result;
       })(),
     ]);
-    
+
 
     // Convert date from "2026-01-22" to "20260122" format
     const formatDate = (d) => (d ? d.replace(/-/g, "") : "");
@@ -260,10 +261,10 @@ module.exports = cds.service.impl(async function () {
       })),
     };
 
-    console.log(
-      "Prepared payload for backend:",
-      JSON.stringify(eccPayload, null, 2),
-    );
+    // console.log(
+    //   "Prepared payload for backend:",
+    //   JSON.stringify(eccPayload, null, 2),
+    // );
 
     // call ecc backend post method
     try {

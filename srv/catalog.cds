@@ -66,9 +66,9 @@ service CatalogService {
     };
 
   /** Custom HDI tables */
-  entity WarehouseStandards as projection on wh.WarehouseStandards;
+  entity WarehouseStandards as projection on wh.WarehouseStandards order by Queue;
 
-  entity UtilizationRates   as projection on wh.UtilizationRates;
+  entity UtilizationRates   as projection on wh.UtilizationRates order by Shift, Queue;
 
   entity appointment        as projection on wh.opendock_dtl_appointment;
 
@@ -183,7 +183,7 @@ service CatalogService {
                           PickCompleteTime: String(10),
                           Queues: array of QueueInput) returns PlannedWDashbPayload;
 
-  action canEditWarehouse(WhseNo: String(4))           returns Boolean;
+  // action canEditWarehouse(WhseNo: String(4))           returns Boolean;
 
   type UserContext {
     id                : String;

@@ -123,7 +123,7 @@ sap.ui.define([
         }
 
         map[shiftName].queues.push(o);
-       
+
       });
 
 
@@ -151,22 +151,22 @@ sap.ui.define([
 
       const s = String(v).trim();
 
-      // Case 1: date YYYY-MM-DD → leave as-is
+      // Case 1: date YYYY-MM-DD 
       if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
         return s;
       }
 
-      // Case 2: time HH:MM:SS → leave as-is
+      // Case 2: time HH:MM:SS 
       if (/^\d{2}:\d{2}:\d{2}$/.test(s)) {
         return s;
       }
 
-      // Case 3: decimal number → truncate
+      // Case 3: decimal number (truncate)
       if (/^-?\d+\.\d+$/.test(s)) {
         return Math.trunc(Number(s)).toString();
       }
 
-      // Case 4: integer → leave as-is
+      // Case 4: integer 
       if (/^-?\d+$/.test(s)) {
         return s;
       }
@@ -174,6 +174,23 @@ sap.ui.define([
       // Fallback: return whatever backend sent
       return s;
     },
+    formatOptionalMetric: function (v, seq) {
+      const nSeq = parseInt(seq, 10);
+
+      // normalize value
+      const s = v === null || v === undefined ? "" : String(v).trim();
+
+      // TEMP RULE: first 4 rows → blank for empty OR zero-like values
+      if (nSeq && nSeq <= 4) {
+        if (s === "" || s === "0") {
+          return "";
+        }
+      }
+
+      // fallback to existing behavior
+      return this.formatTarget(v);
+    },
+
 
 
     onNavBack() {

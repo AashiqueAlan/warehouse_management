@@ -2,7 +2,8 @@
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
   xmlns:layout="sap.ui.layout"
-  xmlns:table="sap.ui.table">
+  xmlns:table="sap.ui.table"
+  xmlns:rowm="sap.ui.table.rowmodes">
 
   <Page id="summaryViewPage" showNavButton="true" navButtonPress="onNavBack">
 
@@ -27,7 +28,7 @@
         <Panel headerText="Outbound">
           <content>
             <table:TreeTable id="outboundOnlyTreeTable" rows="{path: 'viewModel>/outboundData', parameters: {arrayNames: ['children']}}" selectionMode="None" class="sapUiSizeCompact" alternateRowColors="true" enableColumnReordering="false" rowsUpdated="onRowsUpdated" visibleRowCount="15" expandFirstLevel="true" collapseRecursive="false">
-
+              
               <table:columns>
                 <table:Column width="auto">
                   <Label text="Tasks"/>

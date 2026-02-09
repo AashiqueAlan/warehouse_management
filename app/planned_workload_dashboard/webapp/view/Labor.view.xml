@@ -2,7 +2,8 @@
   xmlns:mvc="sap.ui.core.mvc"
   xmlns="sap.m"
   xmlns:layout="sap.ui.layout"
-  xmlns:table="sap.ui.table">
+  xmlns:table="sap.ui.table"
+  xmlns:rowm="sap.ui.table.rowmodes">
 
   <Page id="laborViewPage" showNavButton="true" navButtonPress="onNavBack">
 
@@ -25,7 +26,10 @@
       <!-- ================================================= -->
       <VBox visible="{viewModel>/showOutboundOnly}" class="sapUiSmallMargin">
         <Panel headerText="Outbound">
-          <table:Table rows="{viewModel>/outboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData}.length }">
+          <table:Table rows="{viewModel>/outboundData}" selectionMode="None">
+            <table:rowMode>
+              <rowm:Fixed rowCount="{= ${viewModel>/outboundData}.length }" />
+            </table:rowMode>
             <table:columns>
               <table:Column>
                 <Label text="Activity" />
@@ -61,7 +65,10 @@
       <!-- ================================================= -->
       <VBox visible="{viewModel>/showInboundOnly}" class="sapUiSmallMargin">
         <Panel headerText="Inbound">
-          <table:Table rows="{viewModel>/inboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData}.length }">
+          <table:Table rows="{viewModel>/inboundData}" selectionMode="None" >
+          <table:rowMode>
+            <rowm:Fixed rowCount="{= ${viewModel>/inboundData}.length }"></rowm:Fixed>
+          </table:rowMode>
             <table:columns>
               <table:Column>
                 <Label text="Activity"/>
@@ -78,7 +85,7 @@
               <table:Column hAlign="Center">
                 <Label text="Current"/>
                 <table:template>
-                  <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                  <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                 </table:template>
               </table:Column>
               <table:Column hAlign="Center">
@@ -102,8 +109,10 @@
 
             <!-- OUTBOUND -->
             <Panel headerText="Outbound">
-              <table:Table rows="{viewModel>/outboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData}.length }" class="sapUiSizeCompact" alternateRowColors="true">
-
+              <table:Table rows="{viewModel>/outboundData}" selectionMode="None"  class="sapUiSizeCompact" alternateRowColors="true">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/outboundData}.length }" ></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -122,7 +131,7 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -139,8 +148,10 @@
 
             <!-- INBOUND -->
             <Panel headerText="Inbound">
-              <table:Table rows="{viewModel>/inboundData}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData}.length }" class="sapUiSizeCompact" alternateRowColors="true">
-
+              <table:Table rows="{viewModel>/inboundData}" selectionMode="None"  class="sapUiSizeCompact" alternateRowColors="true">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/inboundData}.length }"></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -159,7 +170,7 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
@@ -188,7 +199,10 @@
           <layout:contentAreas>
 
             <Panel headerText="Outbound (24 hrs)">
-              <table:Table rows="{viewModel>/outboundData24}" visibleRowCount="{= ${viewModel>/outboundData24}.length }" selectionMode="None">
+              <table:Table rows="{viewModel>/outboundData24}"  selectionMode="None">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/outboundData24}.length }"></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -205,7 +219,7 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
@@ -219,7 +233,10 @@
             </Panel>
 
             <Panel headerText="Inbound (24 hrs)">
-              <table:Table rows="{viewModel>/inboundData24}" visibleRowCount="{= ${viewModel>/inboundData24}.length }" selectionMode="None">
+              <table:Table rows="{viewModel>/inboundData24}"  selectionMode="None">
+                <table:rowMode>
+                  <rowm:Fixed rowCount="{= ${viewModel>/inboundData24}.length }"></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -236,7 +253,7 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
@@ -257,7 +274,10 @@
           <layout:contentAreas>
 
             <Panel headerText="Outbound (48 hrs)">
-              <table:Table rows="{viewModel>/outboundData48}" visibleRowCount="{= ${viewModel>/outboundData48}.length }" selectionMode="None">
+              <table:Table rows="{viewModel>/outboundData48}"  selectionMode="None">
+              <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/outboundData48}.length }"></rowm:Fixed>
+              </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -274,7 +294,7 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
@@ -288,7 +308,10 @@
             </Panel>
 
             <Panel headerText="Inbound (48 hrs)">
-              <table:Table rows="{viewModel>/inboundData48}" visibleRowCount="{= ${viewModel>/inboundData48}.length }" selectionMode="None">
+              <table:Table rows="{viewModel>/inboundData48}" selectionMode="None">
+              <table:rowMode>
+              <rowm:Fixed rowCount="{= ${viewModel>/inboundData48}.length }" ></rowm:Fixed>
+              </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -305,13 +328,13 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -332,8 +355,10 @@
 
             <!-- OUTBOUND 24 HOURS -->
             <Panel headerText="Outbound (24 hrs)">
-              <table:Table rows="{viewModel>/outboundData24}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData24}.length }" class="sapUiSizeCompact" alternateRowColors="true">
-
+              <table:Table rows="{viewModel>/outboundData24}" selectionMode="None"  class="sapUiSizeCompact" alternateRowColors="true">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/outboundData24}.length }"></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -352,14 +377,14 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -369,8 +394,10 @@
 
             <!-- OUTBOUND 48 HOURS -->
             <Panel headerText="Outbound (48 hrs)">
-              <table:Table rows="{viewModel>/outboundData48}" selectionMode="None" visibleRowCount="{= ${viewModel>/outboundData48}.length }" class="sapUiSizeCompact" alternateRowColors="true">
-
+              <table:Table rows="{viewModel>/outboundData48}" selectionMode="None"  class="sapUiSizeCompact" alternateRowColors="true">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/outboundData48}.length }"></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -389,14 +416,14 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -418,8 +445,10 @@
 
             <!-- INBOUND 24 HOURS -->
             <Panel headerText="Inbound (24 hrs)">
-              <table:Table rows="{viewModel>/inboundData24}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData24}.length }" class="sapUiSizeCompact" alternateRowColors="true">
-
+              <table:Table rows="{viewModel>/inboundData24}" selectionMode="None"  class="sapUiSizeCompact" alternateRowColors="true">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/inboundData24}.length }"></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -438,14 +467,14 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
@@ -455,8 +484,10 @@
 
             <!-- INBOUND 48 HOURS -->
             <Panel headerText="Inbound (48 hrs)">
-              <table:Table rows="{viewModel>/inboundData48}" selectionMode="None" visibleRowCount="{= ${viewModel>/inboundData48}.length }" class="sapUiSizeCompact" alternateRowColors="true">
-
+              <table:Table rows="{viewModel>/inboundData48}" selectionMode="None"  class="sapUiSizeCompact" alternateRowColors="true">
+                <table:rowMode>
+                <rowm:Fixed rowCount="{= ${viewModel>/inboundData48}.length }"></rowm:Fixed>
+                </table:rowMode>
                 <table:columns>
                   <table:Column>
                     <Label text="Activity"/>
@@ -475,14 +506,14 @@
                   <table:Column hAlign="Center">
                     <Label text="Current"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Current', formatter: '.formatTarget'}"  state="Success" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Current', formatter: '.formatTarget'}" state="Success" class="boldStatus"/>
                     </table:template>
                   </table:Column>
 
                   <table:Column hAlign="Center">
                     <Label text="Difference"/>
                     <table:template>
-                      <ObjectStatus  text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
+                      <ObjectStatus text="{path: 'viewModel>Difference', formatter: '.formatTarget'}" state="Error" class="boldStatus"/>
                     </table:template>
                   </table:Column>
                 </table:columns>
